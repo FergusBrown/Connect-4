@@ -1,17 +1,30 @@
-#include "Grid.h"
+#include "Connect4Board.h"
+#include "DisplayConnect4.cpp"
 #include <iostream>
 
 int main()
 {
-	Grid<int>* grid = new Grid<int>(5, 5);
+	Connect4Board* grid = new Connect4Board(5, 5);
 
 	int test = 22;
 
 	grid->setItemAt(0, 0, test);
 
-	int i = grid->getItemAt(0, 0).value();
+	std::optional<int> i = grid->getItemAt(0, 0).value();
 
-	std::cout << i << std::endl;
+	std::cout << i.value() << std::endl;
+
+	grid->addPiece(1, 1);
+
+	i = grid->getItemAt(0, 5);
+
+	if (i != std::nullopt)
+	{
+		std::cout << i.value() << std::endl;
+	}
+
+	
+	
 
 	delete grid;
 	return 0;

@@ -32,6 +32,11 @@ size_t Grid<T>::getHeight() const
 template<typename T>
 std::optional<T> Grid<T>::getItemAt(const size_t x, const size_t y) const
 {
+	if (x >= mWidth || y >= mHeight)
+	{
+		return std::nullopt;
+	}
+
 	return mCells[x][y];
 }
 
