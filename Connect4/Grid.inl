@@ -36,7 +36,7 @@ std::optional<T> Grid<T>::getItemAt(const size_t x, const size_t y) const
 }
 
 template<typename T>
-void Grid<T>::setItemAt(const size_t x, const size_t y, T &item)
+void Grid<T>::setItemAt(const size_t x, const size_t y, T& item)
 {
 	mCells[x][y].emplace(item);
 }

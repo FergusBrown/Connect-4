@@ -18,12 +18,13 @@ public:
 	size_t getHeight() const;
 	
 	std::optional<T> getItemAt(size_t x, size_t y) const;
-	void setItemAt(const size_t x, const size_t y, T &item);
+	virtual void setItemAt(const size_t x, const size_t y, T &item);
 	void resetAll();
 	void resetAt(const size_t x, const size_t y);
 //	void resize(const size_t x, const size_t y);
 
-private:
+// Protected members can be accessed by derived classes
+protected:
 
 	// Member Variables -- Created on stack or heap?
 	size_t mWidth;
