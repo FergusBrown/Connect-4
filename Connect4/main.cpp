@@ -11,16 +11,35 @@ int main()
 	player1 = Connect4::role::P1;
 	player2 = Connect4::role::P2;
 
+	//grid->addPiece(4, player1);
+	grid->addPiece(3, player1);
+	grid->addPiece(3, player1);
+	grid->addPiece(1, player1);
+	grid->addPiece(1, player2);
+	grid->addPiece(1, player2);
+	grid->addPiece(1, player1);
 
-	char value = 22;
-
-	grid->setItemAt(0, 0, player1);
-
-	std::optional<Connect4::role> i = grid->getItemAt(0, 0);
-
-	grid->addPiece(0, player1);
+	grid->addPiece(2, player2);
+	grid->addPiece(2, player2);
+	grid->addPiece(2, player1);
 	
 	help::displayConnect4(*grid);
+
+
+	if (grid->checkVictory() == std::nullopt) {
+		std::cout << "Nobody has won yet" << std::endl;
+	}
+	else {
+		switch (grid->checkVictory().value())
+		{
+		case Connect4::role::P1:
+			std::cout << "P1 Wins" << std::endl;
+			break;
+		case Connect4::role::P2:
+			std::cout << "P2 Wins" << std::endl;
+			break;
+		}
+	}
 
 	delete grid;
 	return 0;

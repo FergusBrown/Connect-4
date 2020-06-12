@@ -8,11 +8,17 @@ void help::displayConnect4(Connect4Board &board)
 	std::optional<Connect4::role> temp;
 	char piece;
 
-	for (size_t i = 1; i <= width; ++i)
+	for (size_t i = 0; i < width; ++i)
 	{
-		for (size_t j = 0; j < height; ++j)
+		std::cout << "_ ";
+	}
+	std::cout << std::endl;
+
+	for (size_t i = 1; i <= height; ++i)
+	{
+		for (size_t j = 0; j < width; ++j)
 		{
-			temp = board.getItemAt(width - i, j);
+			temp = board.getItemAt(j, height - i);
 			if (temp == std::nullopt)
 			{
 				piece = ' ';
@@ -21,10 +27,13 @@ void help::displayConnect4(Connect4Board &board)
 				switch (temp.value()) {
 				case Connect4::role::P1:
 					piece = help::P1_PIECE;
+					break;
 				case Connect4::role::P2:
 					piece = help::P2_PIECE;
+					break;
 				default:
 					piece = ' ';
+					break;
 				}
 			}
 			std::cout << piece << " ";
