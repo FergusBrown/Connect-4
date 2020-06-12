@@ -13,13 +13,7 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 	{
 		if (mCells[x][i] == std::nullopt)
 		{
-			if (player == Connect4::PLAYER1)
-			{
-				mCells[x][i].emplace(Connect4::P1_PIECE);
-			}
-			else {
-				mCells[x][i].emplace(Connect4::P2_PIECE);
-			}
+			mCells[x][i].emplace(player);
 			return true;
 		}
 	}

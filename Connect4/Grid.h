@@ -21,6 +21,7 @@ public:
 	virtual void setItemAt(const size_t x, const size_t y, T &item);
 	void resetAll();
 	void resetAt(const size_t x, const size_t y);
+	bool isEmpty(const size_t x, const size_t y);
 //	void resize(const size_t x, const size_t y);
 
 // Protected members can be accessed by derived classes

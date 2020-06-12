@@ -9,14 +9,20 @@ namespace Connect4
         P2
     };
 
-    const role PLAYER1 = role::P1;
-    const role PLAYER2 = role::P2;
-    const char P1_PIECE = 'O';
-    const char P2_PIECE = 'X';
+    //struct Player
+    //{
+    //    role role;
+    //    char piece;
+    //};
+
+    //const role PLAYER1 = role::P1;
+    //const role PLAYER2 = role::P2;
+    //const char P1_PIECE = 'O';
+    //const char P2_PIECE = 'X';
 }
 
 class Connect4Board :
-    public Grid<char>
+    public Grid<Connect4::role>
 {
     using Grid::Grid;
 

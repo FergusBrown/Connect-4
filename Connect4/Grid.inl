@@ -64,6 +64,17 @@ void Grid<T>::resetAt(const size_t x, const size_t y)
 	mCells[x][y].reset();
 }
 
+template<typename T>
+inline bool Grid<T>::isEmpty(const size_t x, const size_t y)
+{
+
+	if (getItemAt(x, y) == std::nullopt)
+	{
+		return true;
+	}
+	return false;
+}
+
 /*
 template<typename T>
 void Grid<T>::resize(size_t x, size_t y)
