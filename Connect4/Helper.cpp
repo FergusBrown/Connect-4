@@ -19,7 +19,7 @@ void help::displayConnect4(Connect4Board &board)
 		for (size_t j = 0; j < width; ++j)
 		{
 			temp = board.getItemAt(j, height - i);
-			if (temp == std::nullopt)
+			if (!temp.has_value())
 			{
 				piece = ' ';
 			}

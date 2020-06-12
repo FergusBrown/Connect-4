@@ -26,7 +26,7 @@ int main()
 	help::displayConnect4(*grid);
 
 
-	if (grid->checkVictory() == std::nullopt) {
+	if (!grid->checkVictory().has_value()) {
 		std::cout << "Nobody has won yet" << std::endl;
 	}
 	else {

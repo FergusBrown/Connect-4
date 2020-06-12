@@ -35,5 +35,6 @@ private:
     bool checkVert(std::optional<Connect4::role>& winner);
     bool checkDiagL(std::optional<Connect4::role>& winner);
     bool checkDiagR(std::optional<Connect4::role>& winner);
+    bool checkTurnValid(const Connect4::role& player);
 };
 

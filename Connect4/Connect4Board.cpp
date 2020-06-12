@@ -4,14 +4,14 @@
 // Return if no available position
 bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 {
-	if (x >= mWidth)
+	if (x >= mWidth || !checkTurnValid(player))
 	{
 		return false;
 	}
 
 	for (size_t i = 0; i < mHeight; i++)
 	{
-		if (mCells[x][i] == std::nullopt)
+		if (!mCells[x][i].has_value())
 		{
 			mCells[x][i].emplace(player);
 			return true;
@@ -24,6 +24,7 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 std::optional<Connect4::role> Connect4Board::checkVictory()
 {
 	std::optional<Connect4::role> winner = std::nullopt;
+
 
 	checkHoriz(winner);
 	checkVert(winner);
@@ -44,7 +45,7 @@ bool Connect4Board::checkVert(std::optional<Connect4::role>& winner)
 		for (size_t j = 0; j < mHeight; ++j) {
 			temp = getItemAt(i, j);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -80,7 +81,7 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner)
 		for (size_t j = 0; j < mWidth; ++j) {
 			temp = getItemAt(j, i);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -119,7 +120,7 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner)
 
 			temp = getItemAt(j+i, j);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -149,7 +150,7 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner)
 
 			temp = getItemAt(j, j + i);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -188,7 +189,7 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner)
 
 			temp = getItemAt(mWidth - 1 - j - i, j);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -218,7 +219,7 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner)
 
 			temp = getItemAt(mWidth - 1 - j, j + i);
 
-			if (temp == std::nullopt) {
+			if (!temp.has_value()) {
 				break;
 			}
 
@@ -238,6 +239,41 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner)
 		}
 		P1_count = 0;
 		P2_count = 0;
+	}
+
+	return false;
+}
+
+bool Connect4Board::checkTurnValid(const Connect4::role& player)
+{
+	unsigned int countP1 = 0;
+	unsigned int countP2 = 0;
+
+	for (auto& inner : mCells)
+	{
+		for (auto& cell : inner)
+		{
+			if (cell.has_value())
+			{
+				if (cell.value() == Connect4::role::P1)
+				{
+					++countP1;
+				}
+				else {
+					++countP2;
+				}
+			}
+		}
+	}
+
+	if (countP1 == countP2 && player == Connect4::role::P1)
+	{
+		return true;
+	}
+
+	if (countP1 > countP2 && player == Connect4::role::P2)
+	{
+		return true;
 	}
 
 	return false;
