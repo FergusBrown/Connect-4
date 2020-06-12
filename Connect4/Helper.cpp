@@ -54,3 +54,18 @@ void help::displayConnect4(Connect4Board &board)
 	}
 	std::cout << std::endl;
 }
+
+void help::playerPrompt(Connect4::role& player)
+{
+	std::string name;
+
+	if (player == Connect4::role::P1)
+	{
+		name = "Player 1";
+	}
+	else {
+		name = "Player 2";
+	}
+
+	std::cout << name << ", please insert a valid column to place your piece:";
+}
