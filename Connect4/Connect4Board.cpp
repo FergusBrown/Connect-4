@@ -34,8 +34,30 @@ std::optional<Connect4::role> Connect4Board::checkVictory() const
 	return winner;
 }
 
-bool Connect4Board::checkFull() const
+bool Connect4Board::checkPlayerVictory(const Connect4::role& player) const
 {
+	std::optional<Connect4::role> victor = checkVictory();
+
+	// I f an OR is used here will the first condition being true mean the next value is not checked?
+	if (!victor.has_value() || victor.value() != player)
+	{
+		return false;
+	}
+	else {
+		return true;
+	}
+
+	
+}
+
+bool Connect4Board::checkFinished() const
+{
+
+	if (checkVictory().has_value())
+	{
+		return true;
+	}
+
 	for (auto& inner : mCells)
 	{
 		for (auto& cell : inner)

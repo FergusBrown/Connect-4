@@ -9,16 +9,8 @@ namespace Connect4
         P2
     };
 
-    //struct Player
-    //{
-    //    role role;
-    //    char piece;
-    //};
-
-    //const role PLAYER1 = role::P1;
-    //const role PLAYER2 = role::P2;
-    //const char P1_PIECE = 'O';
-    //const char P2_PIECE = 'X';
+    const role PLAYER1 = role::P1;
+    const role PLAYER2 = role::P2;
 }
 
 class Connect4Board :
@@ -28,8 +20,9 @@ class Connect4Board :
 
 public:
     bool addPiece(const size_t x, const Connect4::role &player);
+    bool checkFinished() const;
     std::optional<Connect4::role> checkVictory() const;
-    bool checkFull() const;
+    bool checkPlayerVictory(const Connect4::role& player) const;
 
 private:
     bool checkHoriz(std::optional<Connect4::role>& winner) const;
