@@ -29,6 +29,7 @@ class Connect4Board :
 public:
     bool addPiece(const size_t x, const Connect4::role &player);
     std::optional<Connect4::role> checkVictory() const;
+    bool checkFull() const;
 
 private:
     bool checkHoriz(std::optional<Connect4::role>& winner) const;

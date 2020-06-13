@@ -70,9 +70,55 @@ void help::playerPrompt(const Connect4::role& player)
 	std::cout << name << ", please insert a valid column to place your piece:" << std::endl;
 }
 
+void help::manualPlayLoop(Connect4Board& board)
+{
+	Connect4::role player1, player2;
+
+	help::displayConnect4(board);
+
+	player1 = Connect4::role::P1;
+	player2 = Connect4::role::P2;
+
+	unsigned int input;
+
+	while (!board.checkVictory() && !board.checkFull())
+	{
+		help::playerPrompt(player1);
+		std::cin >> input;
+		while (std::cin.fail() || input > board.getWidth()) {
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			help::playerPrompt(player1);
+			std::cin >> input;
+		}
+		board.addPiece(input - 1, player1);
+		help::displayConnect4(board);
+
+		if (board.checkVictory() || board.checkFull())
+			break;
+
+		help::playerPrompt(player2);
+		std::cin >> input;
+		while (std::cin.fail() || input > board.getWidth()) {
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			help::playerPrompt(player2);
+			std::cin >> input;
+		}
+		board.addPiece(input - 1, player2);
+		help::displayConnect4(board);
+	}
+
+
+	help::declareWinner(board);
+
+
+}
+
 // Any advantage of passing a pointer like this
 void help::declareWinner(const Connect4Board& board)
 {
+
 	switch (board.checkVictory().value())
 	{
 	case Connect4::role::P1:

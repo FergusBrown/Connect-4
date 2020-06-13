@@ -34,6 +34,22 @@ std::optional<Connect4::role> Connect4Board::checkVictory() const
 	return winner;
 }
 
+bool Connect4Board::checkFull() const
+{
+	for (auto& inner : mCells)
+	{
+		for (auto& cell : inner)
+		{
+			if (!cell.has_value())
+			{
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 
 bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 {
