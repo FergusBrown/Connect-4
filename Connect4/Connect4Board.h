@@ -28,13 +28,13 @@ class Connect4Board :
 
 public:
     bool addPiece(const size_t x, const Connect4::role &player);
-    std::optional<Connect4::role> checkVictory();
+    std::optional<Connect4::role> checkVictory() const;
 
 private:
-    bool checkHoriz(std::optional<Connect4::role>& winner);
-    bool checkVert(std::optional<Connect4::role>& winner);
-    bool checkDiagL(std::optional<Connect4::role>& winner);
-    bool checkDiagR(std::optional<Connect4::role>& winner);
-    bool checkTurnValid(const Connect4::role& player);
+    bool checkHoriz(std::optional<Connect4::role>& winner) const;
+    bool checkVert(std::optional<Connect4::role>& winner) const;
+    bool checkDiagL(std::optional<Connect4::role>& winner) const;
+    bool checkDiagR(std::optional<Connect4::role>& winner) const;
+    bool checkTurnValid(const Connect4::role& player) const;
 };
 

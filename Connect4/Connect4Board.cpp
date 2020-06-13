@@ -4,7 +4,7 @@
 // Return if no available position
 bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 {
-	if (x >= mWidth || !checkTurnValid(player))
+	if (x >= mWidth || !checkTurnValid(player) || mCells[x][mHeight-1].has_value())
 	{
 		return false;
 	}
@@ -21,7 +21,7 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 	return false;
 }
 
-std::optional<Connect4::role> Connect4Board::checkVictory()
+std::optional<Connect4::role> Connect4Board::checkVictory() const
 {
 	std::optional<Connect4::role> winner = std::nullopt;
 
@@ -35,7 +35,7 @@ std::optional<Connect4::role> Connect4Board::checkVictory()
 }
 
 
-bool Connect4Board::checkVert(std::optional<Connect4::role>& winner)
+bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
@@ -70,7 +70,7 @@ bool Connect4Board::checkVert(std::optional<Connect4::role>& winner)
 	return false;
 }
 
-bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner)
+bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
@@ -106,7 +106,7 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner)
 	return false;
 }
 
-bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner)
+bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
@@ -175,7 +175,7 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner)
 	return false;
 }
 
-bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner)
+bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
@@ -244,7 +244,7 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner)
 	return false;
 }
 
-bool Connect4Board::checkTurnValid(const Connect4::role& player)
+bool Connect4Board::checkTurnValid(const Connect4::role& player) const
 {
 	unsigned int countP1 = 0;
 	unsigned int countP2 = 0;

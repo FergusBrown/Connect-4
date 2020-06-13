@@ -8,38 +8,43 @@ int main()
 
 	Connect4::role player1, player2;
 
+	help::displayConnect4(*grid);
+
 	player1 = Connect4::role::P1;
 	player2 = Connect4::role::P2;
 
-	//grid->addPiece(4, player1);
-	grid->addPiece(3, player1);
-	grid->addPiece(3, player1);
-	grid->addPiece(1, player1);
-	grid->addPiece(1, player2);
-	grid->addPiece(1, player2);
-	grid->addPiece(1, player1);
+	unsigned int input;
 
-	grid->addPiece(2, player2);
-	grid->addPiece(2, player2);
-	grid->addPiece(2, player1);
-	
-	help::displayConnect4(*grid);
-
-
-	if (!grid->checkVictory().has_value()) {
-		std::cout << "Nobody has won yet" << std::endl;
-	}
-	else {
-		switch (grid->checkVictory().value())
-		{
-		case Connect4::role::P1:
-			std::cout << "P1 Wins" << std::endl;
-			break;
-		case Connect4::role::P2:
-			std::cout << "P2 Wins" << std::endl;
-			break;
+	while (!grid->checkVictory())
+	{
+		help::playerPrompt(player1);
+		std::cin >> input;
+		while (std::cin.fail() || input > grid->getWidth()) {
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			help::playerPrompt(player1);
+			std::cin >> input;
 		}
+		grid->addPiece(input - 1, player1);
+		help::displayConnect4(*grid);
+
+		if (grid->checkVictory())
+			break;
+
+		help::playerPrompt(player2);
+		std::cin >> input;
+		while (std::cin.fail() || input > grid->getWidth()) {
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			help::playerPrompt(player2);
+			std::cin >> input;
+		}
+		grid->addPiece(input - 1, player2);
+		help::displayConnect4(*grid);
 	}
+	
+
+	help::declareWinner(*grid);
 
 	delete grid;
 	return 0;

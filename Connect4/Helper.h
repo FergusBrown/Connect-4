@@ -4,8 +4,9 @@
 
 namespace help
 {
-	void displayConnect4(Connect4Board& board);
-	void playerPrompt(Connect4::role& player);
+	void displayConnect4(const Connect4Board& board);
+	void playerPrompt(const Connect4::role& player);
+	void declareWinner(const Connect4Board& board);
 
 	const char P1_PIECE = 'X';
 	const char P2_PIECE = 'O';

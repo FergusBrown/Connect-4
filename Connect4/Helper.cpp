@@ -1,6 +1,6 @@
 #include "Helper.h"
 
-void help::displayConnect4(Connect4Board &board)
+void help::displayConnect4(const Connect4Board &board)
 {
 	size_t width = board.getWidth();
 	size_t height = board.getHeight();
@@ -55,7 +55,7 @@ void help::displayConnect4(Connect4Board &board)
 	std::cout << std::endl;
 }
 
-void help::playerPrompt(Connect4::role& player)
+void help::playerPrompt(const Connect4::role& player)
 {
 	std::string name;
 
@@ -67,5 +67,21 @@ void help::playerPrompt(Connect4::role& player)
 		name = "Player 2";
 	}
 
-	std::cout << name << ", please insert a valid column to place your piece:";
+	std::cout << name << ", please insert a valid column to place your piece:" << std::endl;
+}
+
+// Any advantage of passing a pointer like this
+void help::declareWinner(const Connect4Board& board)
+{
+	switch (board.checkVictory().value())
+	{
+	case Connect4::role::P1:
+		std::cout << "P1 wins!" << std::endl;
+		break;
+	case Connect4::role::P2:
+		std::cout << "P2 wins!" << std::endl;
+		break;
+	default:
+		std::cout << "Nobody has won!" << std::endl;
+	}
 }
