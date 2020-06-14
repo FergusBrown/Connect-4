@@ -1,8 +1,15 @@
 #include "TreeSearch.h"
 
+template<typename Node, typename Move>
+inline Move TreeSearch<Node, Move>::bestMove(Node& gameState)
+{
+	// create a set of possible moves and corresponding board states then pass them to 
+	return Move();
+}
+
 // Minimax algorithm from https://en.wikipedia.org/wiki/Minimax
-template<typename Node>
-inline int TreeSearch<Node>::minimax(const Node& gameState, const size_t depth, const bool maximisingPlayer) const
+template<typename Node, typename Move>
+inline int TreeSearch<Node, Move>::minimax(const Node& gameState, const size_t depth, const bool maximisingPlayer) const
 {
 	int heuristicValue = heuristic(gameState);
 
@@ -32,21 +39,21 @@ inline int TreeSearch<Node>::minimax(const Node& gameState, const size_t depth, 
 	}
 }
 
-template<typename Node>
-inline std::vector<Node>* TreeSearch<Node>::getChildren(const Node& gameState) const
+template<typename Node, typename Move>
+inline std::vector<Node>* TreeSearch<Node, Move>::getChildren(const Node& gameState) const
 {
 	return NULL;
 }
 
 // Evaluates the game state based on a defined heuristic
-template<typename Node>
-inline int TreeSearch<Node>::heuristic(const Node& gameState) const
+template<typename Node, typename Move>
+inline int TreeSearch<Node, Move>::heuristic(const Node& gameState) const
 {
 	return INFINITY;
 }
 
-template<typename Node>
-inline bool TreeSearch<Node>::isLeaf(const Node& gameState) const
+template<typename Node, typename Move>
+inline bool TreeSearch<Node, Move>::isLeaf(const Node& gameState) const
 {
 	return false;
 }
