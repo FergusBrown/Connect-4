@@ -35,9 +35,15 @@
     <ClInclude Include="Helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TreeSearch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Grid.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="TreeSearch.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>
