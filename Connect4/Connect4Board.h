@@ -20,7 +20,10 @@ class Connect4Board :
 
 
 public:
-    //Connect4Board();
+    // any way to avoid using this?
+    //std::vector<std::vector<std::optional<Connect4::role>>>* getBoard() const;
+
+
     bool addPiece(const size_t x, const Connect4::role &player);
     bool checkFinished() const;
     std::optional<Connect4::role> checkVictory() const;

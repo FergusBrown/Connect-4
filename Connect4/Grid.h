@@ -16,7 +16,7 @@ public:
 	// Other
 	size_t getWidth() const;
 	size_t getHeight() const;
-	
+
 	std::optional<T> getItemAt(size_t x, size_t y) const;
 	virtual void setItemAt(const size_t x, const size_t y, T &item);
 	void resetAll();

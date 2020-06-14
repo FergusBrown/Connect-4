@@ -34,6 +34,8 @@ inline int TreeSearch<Node, Move>::minimax(const Node& gameState, const size_t d
 		return heuristicValue;
 	}
 
+	int value;
+
 	if (maximisingPlayer)
 	{
 		value = -INFINITY;
