@@ -18,7 +18,9 @@ class Connect4Board :
 {
     using Grid::Grid;
 
+
 public:
+    //Connect4Board();
     bool addPiece(const size_t x, const Connect4::role &player);
     bool checkFinished() const;
     std::optional<Connect4::role> checkVictory() const;

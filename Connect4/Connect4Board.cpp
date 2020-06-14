@@ -1,4 +1,10 @@
 #include "Connect4Board.h"
+
+/* why won't this work
+Connect4Board::Connect4Board()
+	:mWidth(7), mHeight(6)
+{
+}*/
 // Treat 0,0 index as bottom left
 // Iterate through column and find next available position
 // Return if no available position
