@@ -1,5 +1,13 @@
 #include "Connect4Board.h"
 
+size_t Connect4Board::getBestMove()
+{
+	//Connect4TreeSearch AI;
+
+	//return AI.bestMove();
+	return size_t();
+}
+
 /* why won't this work
 Connect4Board::Connect4Board()
 	:mWidth(7), mHeight(6)

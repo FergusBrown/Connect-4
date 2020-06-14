@@ -1,5 +1,7 @@
 #pragma once
 #include "Grid.h"
+#include "Connect4TreeSearch.h"
+
 
 namespace Connect4
 {
@@ -11,6 +13,8 @@ namespace Connect4
 
     const role PLAYER1 = role::P1;
     const role PLAYER2 = role::P2;
+
+    using Board = std::vector<std::vector<role>>;
 }
 
 class Connect4Board :
@@ -23,7 +27,7 @@ public:
     // any way to avoid using this?
     //std::vector<std::vector<std::optional<Connect4::role>>>* getBoard() const;
 
-
+    size_t getBestMove();
     bool addPiece(const size_t x, const Connect4::role &player);
     bool checkFinished() const;
     std::optional<Connect4::role> checkVictory() const;

@@ -10,6 +10,9 @@ template <typename Node, typename Move>
 class TreeSearch <Node, Move>
 {
 public:
+	// Constructor
+	TreeSearch();
+
 	// could also add a player type to pass in here, but expect that the gamestate class will be able to identify the player's turn
 	Move bestMove(Node& gameState);
 

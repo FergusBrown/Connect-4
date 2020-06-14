@@ -3,6 +3,10 @@
 #include <optional>
 #include <vector>
 
+
+template <typename T>
+using GridType = std::vector<std::vector<std::optional<T>>>;
+
 template <typename T>
 class Grid
 {
@@ -30,6 +34,6 @@ protected:
 	// Member Variables -- Created on stack or heap?
 	size_t mWidth;
 	size_t mHeight;
-	std::vector<std::vector<std::optional<T>>> mCells;		// optional indicates null
+	GridType<T> mCells;		// optional indicates null
 };
 #include "Grid.inl"
