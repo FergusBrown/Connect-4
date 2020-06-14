@@ -21,6 +21,7 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 	return false;
 }
 
+// Check and return the winner
 std::optional<Connect4::role> Connect4Board::checkVictory() const
 {
 	std::optional<Connect4::role> winner = std::nullopt;
@@ -34,6 +35,7 @@ std::optional<Connect4::role> Connect4Board::checkVictory() const
 	return winner;
 }
 
+// check if a particular palyer has one
 bool Connect4Board::checkPlayerVictory(const Connect4::role& player) const
 {
 	std::optional<Connect4::role> victor = checkVictory();
@@ -50,6 +52,7 @@ bool Connect4Board::checkPlayerVictory(const Connect4::role& player) const
 	
 }
 
+// check if game is finished
 bool Connect4Board::checkFinished() const
 {
 
@@ -72,7 +75,7 @@ bool Connect4Board::checkFinished() const
 	return true;
 }
 
-
+// check for vertical connect 4
 bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
@@ -108,6 +111,7 @@ bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 	return false;
 }
 
+// check diagonals starting bottom right
 bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;
@@ -144,6 +148,7 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
 	return false;
 }
 
+// check diagonals starting bottom right
 bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
 {
 	unsigned int P1_count = 0;

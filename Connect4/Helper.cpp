@@ -1,5 +1,6 @@
 #include "Helper.h"
 
+// display board via command line
 void help::displayConnect4(const Connect4Board &board)
 {
 	size_t width = board.getWidth();
@@ -55,6 +56,7 @@ void help::displayConnect4(const Connect4Board &board)
 	std::cout << std::endl;
 }
 
+// prompt player to take a turn
 void help::playerPrompt(const Connect4::role& player)
 {
 	std::string name;
@@ -70,6 +72,7 @@ void help::playerPrompt(const Connect4::role& player)
 	std::cout << name << ", please insert a valid column to place your piece:" << std::endl;
 }
 
+// Game loop for human players taking turns
 void help::manualPlayLoop(Connect4Board& board)
 {
 	//Connect4::role player1, player2;
