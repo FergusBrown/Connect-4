@@ -1,10 +1,12 @@
 #pragma once
 #include "TreeSearch.h"
+#include "Connect4Board.h"
 
 class Connect4TreeSearch : 
-	public TreeSearch <size_t, size_t>
+	public TreeSearch <int, size_t>
 {
-
+public:
+	Connect4TreeSearch();
 
 };
 

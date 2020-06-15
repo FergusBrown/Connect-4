@@ -1,6 +1,11 @@
 #include "TreeSearch.h"
 
 template<typename Node, typename Move>
+inline TreeSearch<Node, Move>::TreeSearch()
+{
+}
+
+template<typename Node, typename Move>
 inline Move TreeSearch<Node, Move>::bestMove(Node& gameState)
 {
 	// create a set of possible moves and corresponding board states then pass them to 

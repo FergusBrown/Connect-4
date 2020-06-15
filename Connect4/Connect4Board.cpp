@@ -105,11 +105,13 @@ bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-				case Connect4::role::P1:
+				case Connect4::PLAYER1:
 					++P1_count;
+					P2_count = 0;
 					break;
-				case Connect4::role::P2:
+				case Connect4::PLAYER2:
 					++P2_count;
+					P1_count = 0;
 					break;
 			}
 
@@ -142,11 +144,13 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-			case Connect4::role::P1:
+			case Connect4::PLAYER1:
 				++P1_count;
+				P2_count = 0;
 				break;
-			case Connect4::role::P2:
+			case Connect4::PLAYER2:
 				++P2_count;
+				P1_count = 0;
 				break;
 			}
 
@@ -182,11 +186,13 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-			case Connect4::role::P1:
+			case Connect4::PLAYER1:
 				++P1_count;
+				P2_count = 0;
 				break;
-			case Connect4::role::P2:
+			case Connect4::PLAYER2:
 				++P2_count;
+				P1_count = 0;
 				break;
 			}
 
@@ -212,11 +218,13 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-			case Connect4::role::P1:
+			case Connect4::PLAYER1:
 				++P1_count;
+				P2_count = 0;
 				break;
-			case Connect4::role::P2:
+			case Connect4::PLAYER2:
 				++P2_count;
+				P1_count = 0;
 				break;
 			}
 
@@ -251,11 +259,13 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-			case Connect4::role::P1:
+			case Connect4::PLAYER1:
 				++P1_count;
+				P2_count = 0;
 				break;
-			case Connect4::role::P2:
+			case Connect4::PLAYER2:
 				++P2_count;
+				P1_count = 0;
 				break;
 			}
 
@@ -281,11 +291,13 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner) const
 			}
 
 			switch (temp.value()) {
-			case Connect4::role::P1:
+			case Connect4::PLAYER1:
 				++P1_count;
+				P2_count = 0;
 				break;
-			case Connect4::role::P2:
+			case Connect4::PLAYER2:
 				++P2_count;
+				P1_count = 0;
 				break;
 			}
 
@@ -312,7 +324,7 @@ bool Connect4Board::checkTurnValid(const Connect4::role& player) const
 		{
 			if (cell.has_value())
 			{
-				if (cell.value() == Connect4::role::P1)
+				if (cell.value() == Connect4::PLAYER1)
 				{
 					++countP1;
 				}
@@ -323,12 +335,12 @@ bool Connect4Board::checkTurnValid(const Connect4::role& player) const
 		}
 	}
 
-	if (countP1 == countP2 && player == Connect4::role::P1)
+	if (countP1 == countP2 && player == Connect4::PLAYER1)
 	{
 		return true;
 	}
 
-	if (countP1 > countP2 && player == Connect4::role::P2)
+	if (countP1 > countP2 && player == Connect4::PLAYER2)
 	{
 		return true;
 	}
