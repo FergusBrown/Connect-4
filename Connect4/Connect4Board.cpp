@@ -1,4 +1,5 @@
 #include "Connect4Board.h"
+#include "Connect4TreeSearch.h"
 
 size_t Connect4Board::getBestMove()
 {
@@ -16,7 +17,7 @@ Connect4Board::Connect4Board()
 // Treat 0,0 index as bottom left
 // Iterate through column and find next available position
 // Return if no available position
-bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
+bool Connect4Board::addPiece(const size_t x, const Connect4::Role &player)
 {
 	if (x >= mWidth || !checkTurnValid(player) || mCells[x][mHeight-1].has_value())
 	{
@@ -36,9 +37,9 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::role &player)
 }
 
 // Check and return the winner
-std::optional<Connect4::role> Connect4Board::checkVictory() const
+std::optional<Connect4::Role> Connect4Board::checkVictory() const
 {
-	std::optional<Connect4::role> winner = std::nullopt;
+	std::optional<Connect4::Role> winner = std::nullopt;
 
 
 	checkHoriz(winner);
@@ -50,9 +51,9 @@ std::optional<Connect4::role> Connect4Board::checkVictory() const
 }
 
 // check if a particular palyer has one
-bool Connect4Board::checkPlayerVictory(const Connect4::role& player) const
+bool Connect4Board::checkPlayerVictory(const Connect4::Role& player) const
 {
-	std::optional<Connect4::role> victor = checkVictory();
+	std::optional<Connect4::Role> victor = checkVictory();
 
 	// I f an OR is used here will the first condition being true mean the next value is not checked?
 	if (!victor.has_value() || victor.value() != player)
@@ -90,11 +91,11 @@ bool Connect4Board::checkFinished() const
 }
 
 // check for vertical connect 4
-bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
+bool Connect4Board::checkVert(std::optional<Connect4::Role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
-	std::optional<Connect4::role> temp;
+	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
 		for (size_t j = 0; j < mHeight; ++j) {
@@ -128,12 +129,12 @@ bool Connect4Board::checkVert(std::optional<Connect4::role>& winner) const
 }
 
 // check diagonals starting bottom right
-bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
+bool Connect4Board::checkHoriz(std::optional<Connect4::Role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
 
-	std::optional<Connect4::role> temp;
+	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mHeight; ++i) {
 		for (size_t j = 0; j < mWidth; ++j) {
@@ -167,11 +168,11 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::role>& winner) const
 }
 
 // check diagonals starting bottom right
-bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
+bool Connect4Board::checkDiagL(std::optional<Connect4::Role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
-	std::optional<Connect4::role> temp;
+	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
 		for (size_t j = 0; j < (mWidth - i); ++j) {
@@ -240,11 +241,11 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::role>& winner) const
 	return false;
 }
 
-bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner) const
+bool Connect4Board::checkDiagR(std::optional<Connect4::Role>& winner) const
 {
 	unsigned int P1_count = 0;
 	unsigned int P2_count = 0;
-	std::optional<Connect4::role> temp;
+	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
 		for (size_t j = 0; j < (mWidth - i); ++j) {
@@ -313,7 +314,7 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::role>& winner) const
 	return false;
 }
 
-bool Connect4Board::checkTurnValid(const Connect4::role& player) const
+bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 {
 	unsigned int countP1 = 0;
 	unsigned int countP2 = 0;

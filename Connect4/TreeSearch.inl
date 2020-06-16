@@ -62,6 +62,7 @@ inline int TreeSearch<Node, Move>::minimax(const Node& gameState, const size_t d
 	}
 }
 
+/*
 template<typename Node, typename Move>
 inline std::vector<Node>* TreeSearch<Node, Move>::getChildren(const Node& gameState) const
 {
@@ -91,5 +92,5 @@ template<typename Node, typename Move>
 inline Node* TreeSearch<Node, Move>::generateBoardState(const Move& move) const
 {
 	return NULL;
-}
+}*/
 

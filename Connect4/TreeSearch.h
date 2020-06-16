@@ -18,11 +18,11 @@ public:
 
 protected:
 	int minimax(const Node& gameState, const size_t depth, const bool maximising) const;
-	virtual std::vector<Node>* getChildren(const Node& gameState) const;
-	virtual int heuristic(const Node& gameState) const;
-	virtual bool isLeaf(const Node& gameState) const;
-	virtual std::vector<Move>* getPossibleMoves(const Node& gameState) const;
-	virtual Node* generateBoardState(const Move& move) const;
+	virtual std::vector<Node>* getChildren(const Node& gameState) const =0;
+	virtual int heuristic(const Node& gameState) const =0;
+	virtual bool isLeaf(const Node& gameState) const =0;
+	virtual std::vector<Move>* getPossibleMoves(const Node& gameState) const =0;
+	virtual Node* generateBoardState(const Move& move) const =0;
 };
 #include "TreeSearch.inl"
 

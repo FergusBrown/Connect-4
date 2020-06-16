@@ -6,7 +6,7 @@ void help::displayConnect4(const Connect4Board &board)
 	size_t width = board.getWidth();
 	size_t height = board.getHeight();
 
-	std::optional<Connect4::role> temp;
+	std::optional<Connect4::Role> temp;
 	char piece;
 
 	for (size_t i = 0; i < width; ++i)
@@ -26,10 +26,10 @@ void help::displayConnect4(const Connect4Board &board)
 			}
 			else {
 				switch (temp.value()) {
-				case Connect4::role::P1:
+				case Connect4::PLAYER1:
 					piece = help::P1_PIECE;
 					break;
-				case Connect4::role::P2:
+				case Connect4::PLAYER2:
 					piece = help::P2_PIECE;
 					break;
 				default:
@@ -57,11 +57,11 @@ void help::displayConnect4(const Connect4Board &board)
 }
 
 // prompt player to take a turn
-void help::playerPrompt(const Connect4::role& player)
+void help::playerPrompt(const Connect4::Role& player)
 {
 	std::string name;
 
-	if (player == Connect4::role::P1)
+	if (player == Connect4::PLAYER1)
 	{
 		name = "Player 1";
 	}
@@ -79,8 +79,8 @@ void help::manualPlayLoop(Connect4Board& board)
 
 	help::displayConnect4(board);
 
-	//player1 = Connect4::role::P1;
-	//player2 = Connect4::role::P2;
+	//player1 = Connect4::PLAYER1;
+	//player2 = Connect4::PLAYER2;
 
 	unsigned int input;
 
@@ -123,10 +123,10 @@ void help::declareWinner(const Connect4Board& board)
 {
 	switch (board.checkVictory().value())
 	{
-	case Connect4::role::P1:
+	case Connect4::PLAYER1:
 		std::cout << "P1 wins!" << std::endl;
 		break;
-	case Connect4::role::P2:
+	case Connect4::PLAYER2:
 		std::cout << "P2 wins!" << std::endl;
 		break;
 	default:

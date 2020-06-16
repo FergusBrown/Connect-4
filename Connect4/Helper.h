@@ -5,7 +5,7 @@
 namespace help
 {
 	void displayConnect4(const Connect4Board& board);
-	void playerPrompt(const Connect4::role& player);
+	void playerPrompt(const Connect4::Role& player);
 	void manualPlayLoop(Connect4Board& board);
 	void declareWinner(const Connect4Board& board);
 

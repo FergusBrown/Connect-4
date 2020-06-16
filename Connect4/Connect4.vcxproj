@@ -145,12 +145,14 @@
     <ClCompile Include="Connect4TreeSearch.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="TreeNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connect4Board.h" />
     <ClInclude Include="Connect4TreeSearch.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Helper.h" />
+    <ClInclude Include="TreeNode.h" />
     <ClInclude Include="TreeSearch.h" />
   </ItemGroup>
   <ItemGroup>
