@@ -1,5 +1,11 @@
 #include "Grid.h"
 
+/*template<typename T>
+inline Grid<T>::Grid() :
+	mWidth(0), mHeight(0)
+{
+}*/
+
 template<typename T>
 Grid<T>::Grid(size_t width, size_t height)
 	: mWidth(width), mHeight(height)

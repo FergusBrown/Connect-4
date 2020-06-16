@@ -24,9 +24,6 @@
     <ClCompile Include="Helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TreeNode.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Grid.h">
@@ -44,6 +41,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Grid.inl">
+      <Filter>Header Files</Filter>
+    </None>
+    <None Include="TreeNode.inl">
       <Filter>Header Files</Filter>
     </None>
   </ItemGroup>

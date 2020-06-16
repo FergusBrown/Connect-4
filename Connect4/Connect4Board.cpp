@@ -1,18 +1,17 @@
 #include "Connect4Board.h"
+#include "TreeNode.h"
 
 size_t Connect4Board::getBestMove()
 {
-	//Connect4TreeSearch AI;
-
-	//return AI.bestMove();
-	return size_t();
+	return depthFirstSearch();
 }
 
-/* why won't this work
+ //why won't this work
 Connect4Board::Connect4Board()
-	:mWidth(7), mHeight(6)
+	: Grid<Connect4::Role>(7, 6), mDepth(INFINITY)
 {
-}*/
+}
+
 // Treat 0,0 index as bottom left
 // Iterate through column and find next available position
 // Return if no available position
@@ -28,6 +27,7 @@ bool Connect4Board::addPiece(const size_t x, const Connect4::Role &player)
 		if (!mCells[x][i].has_value())
 		{
 			mCells[x][i].emplace(player);
+			moveHistory.push(x);
 			return true;
 		}
 	}
@@ -64,6 +64,38 @@ bool Connect4Board::checkPlayerVictory(const Connect4::Role& player) const
 	}
 
 	
+}
+
+Connect4::Role Connect4Board::checkPlayerTurn() const
+{
+	if (moveHistory.size() % 2 == 1)
+	{
+		return Connect4::PLAYER2;
+	}
+	else {
+		return Connect4::PLAYER1;
+	}
+}
+
+// roll back the last move
+bool Connect4Board::rollBackMove()
+{
+	if (!moveHistory.empty())
+	{
+		size_t x = moveHistory.top();
+
+		for (size_t i = 0; i < mHeight; ++i)
+		{
+			if (!mCells[moveHistory.top()][i].has_value())
+			{
+				mCells[x][i - 1].reset();
+				moveHistory.pop();
+				return true;
+			}
+		}
+	}
+
+	return false;
 }
 
 // check if game is finished
@@ -346,4 +378,28 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 	}
 
 	return false;
+}
+
+// Create and traverse tree with depth first search -> https://en.wikipedia.org/wiki/Depth-first_search
+// use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
+size_t Connect4Board::depthFirstSearch() const
+{
+	// Initialise current board state as tree root
+	TreeNode<Connect4Board>* current = new TreeNode<Connect4Board>(nullptr);
+	//current->setContent(*this);
+	size_t bestMove = 0;
+
+	// Empty stack to store tree
+	std::stack<TreeNode<Connect4Board>*> tree;
+
+	while (current == nullptr && !tree.empty())
+	{
+		
+
+
+	}
+
+	delete current;
+
+	return bestMove;
 }

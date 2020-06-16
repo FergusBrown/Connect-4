@@ -1,8 +1,6 @@
 #pragma once
 #include "Grid.h"
-//#include "Connect4TreeSearch.h"
-
-class Connect4TreeSearch;
+#include <stack>
 
 namespace Connect4
 {
@@ -21,27 +19,41 @@ namespace Connect4
 class Connect4Board :
     public Grid<Connect4::Role>
 {
-    using Grid::Grid;
+    //using Grid::Grid();
 
 
 public:
-    // any way to avoid using this?
-    //std::vector<std::vector<std::optional<Connect4::role>>>* getBoard() const;
+    // Constructors
+    Connect4Board();
 
-    size_t getBestMove();
-    bool addPiece(const size_t x, const Connect4::Role &player);
+    // Player utility
+    bool addPiece(const size_t x, const Connect4::Role& player);
     bool checkFinished() const;
     std::optional<Connect4::Role> checkVictory() const;
     bool checkPlayerVictory(const Connect4::Role& player) const;
 
+    Connect4::Role checkPlayerTurn() const;
+    bool rollBackMove();
+
+    // AI
+    size_t getBestMove();
+    
+
 private:
+    // Victory checking
     bool checkHoriz(std::optional<Connect4::Role>& winner) const;
     bool checkVert(std::optional<Connect4::Role>& winner) const;
     bool checkDiagL(std::optional<Connect4::Role>& winner) const;
     bool checkDiagR(std::optional<Connect4::Role>& winner) const;
+
+    // Turn validation
     bool checkTurnValid(const Connect4::Role& player) const;
 
-    // For tree search
-    int heuristicValue;
+    // List of move made
+    std::stack<size_t> moveHistory;
+
+    // Members for AI/tree search
+    float mDepth;
+    size_t depthFirstSearch() const;
 };
 

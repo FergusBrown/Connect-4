@@ -12,6 +12,7 @@ class Grid
 {
 public:
 	// Constructors
+	//virtual Grid();
 	Grid(size_t width, size_t height);
 
 	// Deconstructors

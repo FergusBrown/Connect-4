@@ -1,7 +1,7 @@
 #include "TreeNode.h"
 
 template<typename T>
-TreeNode<T>::TreeNode(const TreeNode* parent) :
+TreeNode<T>::TreeNode(TreeNode* parent) :
 	mParent(parent)
 {
 }
@@ -17,7 +17,7 @@ inline TreeNode<T>::~TreeNode()
 }
 
 template<typename T>
-void TreeNode<T>::setParent(const TreeNode* parent)
+void TreeNode<T>::setParent(TreeNode* parent)
 {
 	this->mParent = parent;
 }
@@ -29,14 +29,14 @@ void TreeNode<T>::setContent(const T& content)
 }
 
 template<typename T>
-void TreeNode<T>::appendChild(const TreeNode* child)
+void TreeNode<T>::appendChild(TreeNode* child)
 {
 	child->parent = this;
 	mChildren.push_back(child);
 }
 
 template<typename T>
-const T* TreeNode<T>::getContent()
+const T* TreeNode<T>::getContent() const
 {
 	return &mContent;
 }

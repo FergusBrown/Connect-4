@@ -114,13 +114,12 @@ void help::manualPlayLoop(Connect4Board& board)
 
 
 	help::declareWinner(board);
-
-
 }
 
 // Any advantage of passing a pointer like this
 void help::declareWinner(const Connect4Board& board)
 {
+
 	switch (board.checkVictory().value())
 	{
 	case Connect4::PLAYER1:

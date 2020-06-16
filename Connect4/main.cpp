@@ -4,7 +4,7 @@
 
 int main()
 {
-	Connect4Board* board = new Connect4Board(7, 6);
+	Connect4Board* board = new Connect4Board();
 
 	help::manualPlayLoop(*board);
 

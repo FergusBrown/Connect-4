@@ -144,7 +144,6 @@
     <ClCompile Include="Connect4Board.cpp" />
     <ClCompile Include="Helper.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="TreeNode.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Connect4Board.h" />
@@ -154,6 +153,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Grid.inl" />
+    <None Include="TreeNode.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
