@@ -1,3 +1,6 @@
+#include <limits>
+#include <algorithm>
+#include <initializer_list>
 #include "Connect4Board.h"
 #include "TreeNode.h"
 
@@ -8,7 +11,7 @@ size_t Connect4Board::getBestMove()
 
  //why won't this work
 Connect4Board::Connect4Board()
-	: Grid<Connect4::Role>(7, 6), mDepth(INFINITY)
+	: Grid<Connect4::Role>(7, 6), mMaxDepth(0)
 {
 }
 
@@ -124,8 +127,8 @@ bool Connect4Board::checkFinished() const
 // check for vertical connect 4
 bool Connect4Board::checkVert(std::optional<Connect4::Role>& winner) const
 {
-	unsigned int P1_count = 0;
-	unsigned int P2_count = 0;
+	size_t P1_count = 0;
+	size_t P2_count = 0;
 	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
@@ -162,8 +165,8 @@ bool Connect4Board::checkVert(std::optional<Connect4::Role>& winner) const
 // check diagonals starting bottom right
 bool Connect4Board::checkHoriz(std::optional<Connect4::Role>& winner) const
 {
-	unsigned int P1_count = 0;
-	unsigned int P2_count = 0;
+	size_t P1_count = 0;
+	size_t P2_count = 0;
 
 	std::optional<Connect4::Role> temp;
 
@@ -201,8 +204,8 @@ bool Connect4Board::checkHoriz(std::optional<Connect4::Role>& winner) const
 // check diagonals starting bottom right
 bool Connect4Board::checkDiagL(std::optional<Connect4::Role>& winner) const
 {
-	unsigned int P1_count = 0;
-	unsigned int P2_count = 0;
+	size_t P1_count = 0;
+	size_t P2_count = 0;
 	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
@@ -274,8 +277,8 @@ bool Connect4Board::checkDiagL(std::optional<Connect4::Role>& winner) const
 
 bool Connect4Board::checkDiagR(std::optional<Connect4::Role>& winner) const
 {
-	unsigned int P1_count = 0;
-	unsigned int P2_count = 0;
+	size_t P1_count = 0;
+	size_t P2_count = 0;
 	std::optional<Connect4::Role> temp;
 
 	for (size_t i = 0; i < mWidth; ++i) {
@@ -345,10 +348,181 @@ bool Connect4Board::checkDiagR(std::optional<Connect4::Role>& winner) const
 	return false;
 }
 
+size_t Connect4Board::maxConnections(const Connect4::Role& player) const
+{
+	return std::max<size_t>({ countHoriz(player), countVert(player), countDiagL(player), countDiagR(player) });
+}
+
+size_t Connect4Board::countHoriz(const Connect4::Role& player) const
+{
+	size_t maxCount = 0;
+
+	std::optional<Connect4::Role> temp;
+
+	for (size_t i = 0; i < mHeight; ++i) {
+		for (size_t j = 0; j < mWidth; ++j) {
+			temp = getItemAt(j, i);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	return maxCount;
+}
+
+size_t Connect4Board::countVert(const Connect4::Role& player) const
+{
+	size_t maxCount = 0;
+
+	std::optional<Connect4::Role> temp;
+
+	for (size_t i = 0; i < mWidth; ++i) {
+		for (size_t j = 0; j < mHeight; ++j) {
+			temp = getItemAt(i, j);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	return maxCount;
+}
+
+size_t Connect4Board::countDiagL(const Connect4::Role& player) const
+{
+	size_t maxCount = 0;
+
+	std::optional<Connect4::Role> temp;
+
+	for (size_t i = 0; i < mWidth; ++i) {
+		for (size_t j = 0; j < (mWidth - i); ++j) {
+			if (j >= mHeight) {
+				break;
+			}
+
+			temp = getItemAt(j + i, j);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	for (size_t i = 0; i < mHeight; ++i) {
+		for (size_t j = 0; j < (mWidth - i); ++j) {
+			if (j >= mHeight) {
+				break;
+			}
+
+			temp = getItemAt(j, j + i);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	return maxCount;
+}
+
+size_t Connect4Board::countDiagR(const Connect4::Role& player) const
+{
+	size_t maxCount = 0;
+
+	std::optional<Connect4::Role> temp;
+
+	for (size_t i = 0; i < mWidth; ++i) {
+		for (size_t j = 0; j < (mWidth - i); ++j) {
+			if (j >= mHeight) {
+				break;
+			}
+
+			temp = getItemAt(mWidth - 1 - j - i, j);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	for (size_t i = 0; i < mHeight; ++i) {
+		for (size_t j = 0; j < (mWidth - i); ++j) {
+			if (j >= mHeight) {
+				break;
+			}
+
+			temp = getItemAt(mWidth - 1 - j, j + i);
+
+			if (!temp.has_value()) {
+				break;
+			}
+
+			if (temp.value() == player)
+			{
+				++maxCount;
+			}
+			else {
+				maxCount = 0;
+			}
+		}
+		maxCount = 0;
+	}
+
+	return maxCount;
+}
+
 bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 {
-	unsigned int countP1 = 0;
-	unsigned int countP2 = 0;
+	size_t countP1 = 0;
+	size_t countP2 = 0;
 
 	for (auto& inner : mCells)
 	{
@@ -384,22 +558,77 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
 size_t Connect4Board::depthFirstSearch() const
 {
-	// Initialise current board state as tree root
-	TreeNode<Connect4Board>* current = new TreeNode<Connect4Board>(nullptr);
-	//current->setContent(*this);
+	// Default best move to 0
 	size_t bestMove = 0;
-
+	
+	// Initialise tree root and calculate its heuristic value
+	int heuristicValue = evaluateBoard(*this);
+	TreeNode<int>* currentNode = new TreeNode<int>(nullptr, heuristicValue);
+	
 	// Empty stack to store tree
-	std::stack<TreeNode<Connect4Board>*> tree;
+	std::stack<TreeNode<int>*> tree;
 
-	while (current == nullptr && !tree.empty())
+
+	while (currentNode == nullptr && !tree.empty())
 	{
 		
 
 
 	}
 
-	delete current;
+	delete currentNode;
 
 	return bestMove;
+}
+
+// Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
+int Connect4Board::evaluateBoard(const Connect4Board& board) const
+{
+
+	Connect4::Role turnPlayer = board.checkPlayerTurn();
+	size_t maxCount = board.maxConnections(turnPlayer);
+
+	int heuristicValue;
+
+
+	switch (maxCount) {
+
+	case 4:
+		heuristicValue = INT_MAX;
+		break;
+
+	case 3:
+		heuristicValue = featureTwo(board);
+		if (heuristicValue == INT_MAX)
+		{
+			break;
+		}
+		heuristicValue += featureThree(board) + featureFour(board);
+		break;
+
+	case 2:
+		heuristicValue = featureThree(board) + featureFour(board);
+		break;
+
+	default:
+		heuristicValue = featureFour(board);
+		break;
+	}
+
+	return heuristicValue;
+}
+
+int Connect4Board::featureTwo(const Connect4Board& board) const
+{
+	return 0;
+}
+
+int Connect4Board::featureThree(const Connect4Board& board) const
+{
+	return 0;
+}
+
+int Connect4Board::featureFour(const Connect4Board& board) const
+{
+	return 0;
 }

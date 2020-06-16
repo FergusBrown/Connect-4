@@ -75,14 +75,9 @@ void help::playerPrompt(const Connect4::Role& player)
 // Game loop for human players taking turns
 void help::manualPlayLoop(Connect4Board& board)
 {
-	//Connect4::role player1, player2;
-
 	help::displayConnect4(board);
 
-	//player1 = Connect4::PLAYER1;
-	//player2 = Connect4::PLAYER2;
-
-	unsigned int input;
+	size_t input;
 
 	while (!board.checkFinished())
 	{

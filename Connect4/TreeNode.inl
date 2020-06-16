@@ -6,6 +6,13 @@ TreeNode<T>::TreeNode(TreeNode* parent) :
 {
 }
 
+// Should this be inline?
+template<typename T>
+TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
+	mParent(parent), mContent(content)
+{
+}
+
 // Delete all children so that delete only ever needs to be called on the root
 template<typename T>
 inline TreeNode<T>::~TreeNode()
@@ -29,9 +36,10 @@ void TreeNode<T>::setContent(const T& content)
 }
 
 template<typename T>
-void TreeNode<T>::appendChild(TreeNode* child)
+void TreeNode<T>::appendChild(TreeNode* child, const T& content)
 {
-	child->parent = this;
+	child->setParent(this);
+	child->setContent(content);
 	mChildren.push_back(child);
 }
 
@@ -39,4 +47,10 @@ template<typename T>
 const T* TreeNode<T>::getContent() const
 {
 	return &mContent;
+}
+
+template<typename T>
+inline size_t TreeNode<T>::getChildrenSize() const
+{
+	return mChildren.size();
 }

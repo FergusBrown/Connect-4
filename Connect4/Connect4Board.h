@@ -46,6 +46,13 @@ private:
     bool checkDiagL(std::optional<Connect4::Role>& winner) const;
     bool checkDiagR(std::optional<Connect4::Role>& winner) const;
 
+    // Count number of connections
+    size_t maxConnections(const Connect4::Role& player) const;
+    size_t countHoriz(const Connect4::Role& player) const;
+    size_t countVert(const Connect4::Role& player) const;
+    size_t countDiagL(const Connect4::Role& player) const;
+    size_t countDiagR(const Connect4::Role& player) const;
+
     // Turn validation
     bool checkTurnValid(const Connect4::Role& player) const;
 
@@ -53,7 +60,13 @@ private:
     std::stack<size_t> moveHistory;
 
     // Members for AI/tree search
-    float mDepth;
+    size_t mMaxDepth;
     size_t depthFirstSearch() const;
+
+    // - Heuristic evaluation
+    int evaluateBoard(const Connect4Board& board) const;
+    int featureTwo(const Connect4Board& board) const;
+    int featureThree(const Connect4Board& board) const;
+    int featureFour(const Connect4Board& board) const;
 };
 
