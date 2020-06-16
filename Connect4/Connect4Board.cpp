@@ -1,5 +1,4 @@
 #include "Connect4Board.h"
-#include "Connect4TreeSearch.h"
 
 size_t Connect4Board::getBestMove()
 {
