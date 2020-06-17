@@ -2,14 +2,14 @@
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent) :
-	mParent(parent), mEmpty(true)
+	mParent(parent), mEmpty(true), mDiscovered(false)
 {
 }
 
 // Should this be inline?
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
-	mParent(parent), mContent(content), mEmpty(true)
+	mParent(parent), mContent(content), mEmpty(true), mDiscovered(false)
 {
 }
 
@@ -34,6 +34,12 @@ void TreeNode<T>::setContent(const T& content)
 {
 	mContent = content;
 	mEmpty = false;
+}
+
+template<typename T>
+inline void TreeNode<T>::setDiscovered()
+{
+	mDiscovered = true;
 }
 
 template<typename T>
@@ -81,7 +87,13 @@ inline size_t TreeNode<T>::getChildrenSize() const
 }
 
 template<typename T>
-inline bool TreeNode<T>::empty()
+inline bool TreeNode<T>::isEmpty()
 {
 	return mEmpty;
+}
+
+template<typename T>
+inline bool TreeNode<T>::isDiscovered()
+{
+	return mDiscovered;
 }

@@ -561,62 +561,130 @@ size_t Connect4Board::depthFirstSearch() const
 	// Find current player to maximise for
 	Connect4::Role currentPlayer = checkPlayerTurn();
 
-	// Default best move to 0, this is the index of the child to a node
+	// This is the index of the child to a node
 	size_t currentMove;
 
-	// Best move is the move which will be returned
-	size_t bestMove = 0;
+	// Indicates whether current node should look to max or minimise
+	// This should be flipped whenever depth increments or decrements
+	bool maximisingPlayer = true;
+	int defaultValue = INT_MIN;
 
-	// Initialise tree root and calculate its heuristic value
-	int heuristicValue = evaluateBoard(*this);
-	TreeNode<int>* currentNode = new TreeNode<int>(nullptr, heuristicValue);
+	// Value to store in node
+	int heuristicValue = INT_MIN;
+
+	// Root node
+	TreeNode<int>* root = new TreeNode<int>(nullptr, heuristicValue);
+
+	// Vector to store tree traversal
+	std::vector<TreeNode<int>*> tree;
+	tree.push_back(root);
 	
 	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
 	Connect4Board* tempBoard = new Connect4Board();
 	*tempBoard = *this;
 
-	// Empty stack to store tree
-	std::stack<TreeNode<int>*> tree;
+	
+	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
+	while (!(tree.back()->getParent() == nullptr && currentMove < mWidth))
+	{
 
-	// maximising player initially true as we start with a board state we want to maximise
-	// This should be flipped whenever depth increments or decrements
-	bool maximisingPlayer = true;
+
+		if (tree.back()->isEmpty())
+		{
+			tree.pop_back();
+
+			if (!tree.back()->isDiscovered())
+			{
+				heuristicValue = evaluateBoard(*tempBoard);
+				tree.back()->setContent(heuristicValue);
+				tree.back()->setDiscovered();
+			}
+
+			// Perform minimax
+			if (maximisingPlayer)
+			{
+				heuristicValue = std::max(tree.rbegin()[1]->getContent(), tree.back()->getContent());
+			}
+			else {
+				heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
+			}
+
+			tree.rbegin()[1]->setContent(heuristicValue);
+		}
+		
+		
+		currentMove = tree.back()->getChildrenSize();
+
+		if (currentMove < mWidth)
+		{
+			// create child and add it to the vector
+			// If a pice can be added then create a child with a child with appropriate value
+			// Otherwise create an empty child
+			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
+			{
+				
+				if (maximisingPlayer)
+				{
+					tree.back()->appendChild(INT_MIN);
+				}
+				else {
+					tree.back()->appendChild(INT_MAX);
+				}
+				tree.push_back(tree.back()->getChild(currentMove));
+			}
+			else {
+				tree.back()->appendEmptyChild();
+				tree.push_back(tree.back()->getChild(currentMove));
+			}
+
+			/*
+			// Flip minimax bool and change current player
+			maximisingPlayer = !maximisingPlayer;
+			if (currentPlayer == Connect4::PLAYER1)
+			{
+				currentPlayer = Connect4::PLAYER2;
+			}
+			else {
+				currentPlayer = Connect4::PLAYER1;
+			}*/
+
+		}
+		else {
+			// All children have been evaluated
+			// Rollback to previous node then and pop from vector
+			tempBoard->rollBackMove();
+			tree.pop_back();
+		}
+
+		// Flip minimax bool and change current player
+		maximisingPlayer = !maximisingPlayer;
+		if (currentPlayer == Connect4::PLAYER1)
+		{
+			currentPlayer = Connect4::PLAYER2;
+		}
+		else {
+			currentPlayer = Connect4::PLAYER1;
+		}
+	}
 
 	
 
-	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
-	while (!(currentNode->getParent() == nullptr && currentMove < mWidth))
+	// Extract best move from the tree based on 
+	size_t bestMove = 4;
+	heuristicValue = root->getContent();
+	for (size_t i = 0; i < mWidth; ++i)
 	{
-		tree.push(currentNode);
-
-		currentMove = currentNode->getChildrenSize();
-
-		// create and evaluate a child if all move indices not exhausted
-		if (currentMove < mWidth - 1)
+		if (root->getChild(i)->getContent() > heuristicValue)
 		{
-			// TODO: needs to alternate player
-			if (tempBoard->addPiece(currentNode->getChildrenSize(), currentPlayer))
-			{
-				heuristicValue = evaluateBoard(*tempBoard);
-				currentNode->appendChild(heuristicValue);
-				currentNode = currentNode->getChild(currentMove);
-			}
-			else {
-				currentNode->appendEmptyChild();
-			}
-			++currentMove;
-		}
 
-		if (currentNode->empty() && !tree.empty())
-		{
-			tree.pop();
-			// overwrite parent heuristice value with minimax...
 		}
-
 	}
 
-	delete currentNode;
+
+	delete root;
 	delete tempBoard;
+
+
 
 	return bestMove;
 }
