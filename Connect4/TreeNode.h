@@ -24,7 +24,7 @@ public:
 	bool isEmpty();
 	bool isDiscovered();
 
-	void appendChild(const T& content);
+	void appendChild(T& content);
 	void appendEmptyChild();
 
 

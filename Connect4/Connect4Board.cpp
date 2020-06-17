@@ -623,10 +623,12 @@ size_t Connect4Board::depthFirstSearch() const
 				
 				if (maximisingPlayer)
 				{
-					tree.back()->appendChild(INT_MIN);
+					heuristicValue = INT_MIN;
+					tree.back()->appendChild(heuristicValue);
 				}
 				else {
-					tree.back()->appendChild(INT_MAX);
+					heuristicValue = INT_MAX;
+					tree.back()->appendChild(heuristicValue);
 				}
 				tree.push_back(tree.back()->getChild(currentMove));
 			}
