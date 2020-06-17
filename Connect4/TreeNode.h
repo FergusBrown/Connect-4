@@ -21,6 +21,7 @@ public:
 	TreeNode<T>* getChild(int position);
 	TreeNode<T>* getParent() const;
 	size_t getChildrenSize() const;
+	bool hasParent();
 	bool isEmpty();
 	bool isDiscovered();
 

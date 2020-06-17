@@ -9,7 +9,7 @@ TreeNode<T>::TreeNode(TreeNode* parent) :
 // Should this be inline?
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
-	mParent(parent), mContent(content), mEmpty(true), mDiscovered(false)
+	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false)
 {
 }
 
@@ -84,6 +84,18 @@ template<typename T>
 inline size_t TreeNode<T>::getChildrenSize() const
 {
 	return mChildren.size();
+}
+
+template<typename T>
+bool TreeNode<T>::hasParent()
+{
+	if (mParent == nullptr)
+	{
+		return false;
+	}
+	else {
+		return true;
+	}
 }
 
 template<typename T>

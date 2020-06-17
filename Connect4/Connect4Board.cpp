@@ -562,7 +562,7 @@ size_t Connect4Board::depthFirstSearch() const
 	Connect4::Role currentPlayer = checkPlayerTurn();
 
 	// This is the index of the child to a node
-	size_t currentMove;
+	size_t currentMove = 0;
 
 	// Indicates whether current node should look to max or minimise
 	// This should be flipped whenever depth increments or decrements
@@ -582,13 +582,15 @@ size_t Connect4Board::depthFirstSearch() const
 	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
 	Connect4Board* tempBoard = new Connect4Board();
 	*tempBoard = *this;
-
 	
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
-	while (!(tree.back()->getParent() == nullptr && currentMove < mWidth))
+	while (!(tree.back()->hasParent() && currentMove  >= mWidth))
 	{
+
+
 		if (tree.back()->isEmpty())
 		{
+			tree.back()->setParent(nullptr);
 			tree.pop_back();
 
 			if (!tree.back()->isDiscovered())
@@ -623,11 +625,11 @@ size_t Connect4Board::depthFirstSearch() const
 				
 				if (maximisingPlayer)
 				{
-					heuristicValue = INT_MIN;
+					heuristicValue = INT_MAX;
 					tree.back()->appendChild(heuristicValue);
 				}
 				else {
-					heuristicValue = INT_MAX;
+					heuristicValue = INT_MIN;
 					tree.back()->appendChild(heuristicValue);
 				}
 				tree.push_back(tree.back()->getChild(currentMove));
@@ -641,29 +643,32 @@ size_t Connect4Board::depthFirstSearch() const
 			// All children have been evaluated
 			// Rollback to previous node then and pop from vector
 			tempBoard->rollBackMove();
+			tree.back()->setParent(nullptr);
 			tree.pop_back();
 		}
+		
 
-		// Flip minimax bool and change current player
-		maximisingPlayer = !maximisingPlayer;
-		if (currentPlayer == Connect4::PLAYER1)
-		{
-			currentPlayer = Connect4::PLAYER2;
-		}
-		else {
-			currentPlayer = Connect4::PLAYER1;
-		}
+	}
+
+	// Flip minimax bool and change current player
+	maximisingPlayer = !maximisingPlayer;
+	if (currentPlayer == Connect4::PLAYER1)
+	{
+		currentPlayer = Connect4::PLAYER2;
+	}
+	else {
+		currentPlayer = Connect4::PLAYER1;
 	}
 
 	// Extract best move from the tree based on 
-	size_t bestMove = 4;
+	size_t bestMove = 3;
 	heuristicValue = root->getContent();
 	for (size_t i = 0; i < mWidth; ++i)
 	{
-		if (root->getChild(i)->getContent() == heuristicValue)
-		{
-			bestMove = i;
-		}
+		//if (root->getChild(i)->getContent() == heuristicValue)
+		//{
+		//	bestMove = i;
+		//}
 	}
 
 	delete root;

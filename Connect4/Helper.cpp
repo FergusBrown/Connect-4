@@ -111,6 +111,39 @@ void help::manualPlayLoop(Connect4Board& board)
 	help::declareWinner(board);
 }
 
+// Game loop for human players taking turns
+void help::agentLoopP2(Connect4Board& board)
+{
+	help::displayConnect4(board);
+
+	size_t input;
+
+	while (!board.checkFinished())
+	{
+		help::playerPrompt(Connect4::PLAYER1);
+		std::cin >> input;
+		while (std::cin.fail() || input > board.getWidth()) {
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			help::playerPrompt(Connect4::PLAYER1);
+			std::cin >> input;
+		}
+		board.addPiece(input - 1, Connect4::PLAYER1);
+		help::displayConnect4(board);
+
+		if (board.checkFinished())
+			break;
+
+		input = board.getBestMove();
+		board.addPiece(input, Connect4::PLAYER2);
+		help::displayConnect4(board);
+		std::cout << "AI played column" << input + 1 << std::endl;
+	}
+
+	help::declareWinner(board);
+}
+
+
 // Any advantage of passing a pointer like this
 void help::declareWinner(const Connect4Board& board)
 {
@@ -127,3 +160,6 @@ void help::declareWinner(const Connect4Board& board)
 		std::cout << "Nobody has won!" << std::endl;
 	}
 }
+
+
+
