@@ -558,25 +558,65 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
 size_t Connect4Board::depthFirstSearch() const
 {
-	// Default best move to 0
+	// Find current player to maximise for
+	Connect4::Role currentPlayer = checkPlayerTurn();
+
+	// Default best move to 0, this is the index of the child to a node
+	size_t currentMove;
+
+	// Best move is the move which will be returned
 	size_t bestMove = 0;
-	
+
 	// Initialise tree root and calculate its heuristic value
 	int heuristicValue = evaluateBoard(*this);
 	TreeNode<int>* currentNode = new TreeNode<int>(nullptr, heuristicValue);
 	
+	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
+	Connect4Board* tempBoard = new Connect4Board();
+	*tempBoard = *this;
+
 	// Empty stack to store tree
 	std::stack<TreeNode<int>*> tree;
 
+	// maximising player initially true as we start with a board state we want to maximise
+	// This should be flipped whenever depth increments or decrements
+	bool maximisingPlayer = true;
 
-	while (currentNode == nullptr && !tree.empty())
+	
+
+	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
+	while (!(currentNode->getParent() == nullptr && currentMove < mWidth))
 	{
-		
+		tree.push(currentNode);
 
+		currentMove = currentNode->getChildrenSize();
+
+		// create and evaluate a child if all move indices not exhausted
+		if (currentMove < mWidth - 1)
+		{
+			// TODO: needs to alternate player
+			if (tempBoard->addPiece(currentNode->getChildrenSize(), currentPlayer))
+			{
+				heuristicValue = evaluateBoard(*tempBoard);
+				currentNode->appendChild(heuristicValue);
+				currentNode = currentNode->getChild(currentMove);
+			}
+			else {
+				currentNode->appendEmptyChild();
+			}
+			++currentMove;
+		}
+
+		if (currentNode->empty() && !tree.empty())
+		{
+			tree.pop();
+			// overwrite parent heuristice value with minimax...
+		}
 
 	}
 
 	delete currentNode;
+	delete tempBoard;
 
 	return bestMove;
 }

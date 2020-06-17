@@ -2,14 +2,14 @@
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent) :
-	mParent(parent)
+	mParent(parent), mEmpty(true)
 {
 }
 
 // Should this be inline?
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
-	mParent(parent), mContent(content)
+	mParent(parent), mContent(content), mEmpty(true)
 {
 }
 
@@ -33,24 +33,55 @@ template<typename T>
 void TreeNode<T>::setContent(const T& content)
 {
 	mContent = content;
+	mEmpty = false;
 }
 
 template<typename T>
-void TreeNode<T>::appendChild(TreeNode* child, const T& content)
+void TreeNode<T>::appendChild(const T& content)
 {
-	child->setParent(this);
-	child->setContent(content);
+	TreeNode<T>* child = new TreeNode<T>(this, content);
 	mChildren.push_back(child);
 }
 
 template<typename T>
-const T* TreeNode<T>::getContent() const
+inline void TreeNode<T>::appendEmptyChild()
 {
-	return &mContent;
+	TreeNode<T>* child = new TreeNode<T>(this);
+	mChildren.push_back(child);
+}
+
+// need some sort of error protection here
+template<typename T>
+const T TreeNode<T>::getContent() const
+{
+	return mContent;
+}
+
+template<typename T>
+inline TreeNode<T>* TreeNode<T>::getChild(int position)
+{
+	if (mChildren(position).empty())
+	{
+		return nullptr;
+	}
+
+	return mChildren(position);
+}
+
+template<typename T>
+inline TreeNode<T>* TreeNode<T>::getParent() const
+{
+	return mParent;
 }
 
 template<typename T>
 inline size_t TreeNode<T>::getChildrenSize() const
 {
 	return mChildren.size();
+}
+
+template<typename T>
+inline bool TreeNode<T>::empty()
+{
+	return mEmpty;
 }
