@@ -587,8 +587,6 @@ size_t Connect4Board::depthFirstSearch() const
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
 	while (!(tree.back()->getParent() == nullptr && currentMove < mWidth))
 	{
-
-
 		if (tree.back()->isEmpty())
 		{
 			tree.pop_back();
@@ -636,18 +634,6 @@ size_t Connect4Board::depthFirstSearch() const
 				tree.back()->appendEmptyChild();
 				tree.push_back(tree.back()->getChild(currentMove));
 			}
-
-			/*
-			// Flip minimax bool and change current player
-			maximisingPlayer = !maximisingPlayer;
-			if (currentPlayer == Connect4::PLAYER1)
-			{
-				currentPlayer = Connect4::PLAYER2;
-			}
-			else {
-				currentPlayer = Connect4::PLAYER1;
-			}*/
-
 		}
 		else {
 			// All children have been evaluated
@@ -667,24 +653,19 @@ size_t Connect4Board::depthFirstSearch() const
 		}
 	}
 
-	
-
 	// Extract best move from the tree based on 
 	size_t bestMove = 4;
 	heuristicValue = root->getContent();
 	for (size_t i = 0; i < mWidth; ++i)
 	{
-		if (root->getChild(i)->getContent() > heuristicValue)
+		if (root->getChild(i)->getContent() == heuristicValue)
 		{
-
+			bestMove = i;
 		}
 	}
 
-
 	delete root;
 	delete tempBoard;
-
-
 
 	return bestMove;
 }
