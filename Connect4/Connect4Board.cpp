@@ -4,14 +4,16 @@
 #include "Connect4Board.h"
 #include "TreeNode.h"
 
+// REMOVE ONCE DONE
+#include "Helper.h"
+
 size_t Connect4Board::getBestMove()
 {
 	return depthFirstSearch();
 }
 
- //why won't this work
 Connect4Board::Connect4Board()
-	: Grid<Connect4::Role>(7, 6), mMaxDepth(0)
+	: Grid<Connect4::Role>(7, 6), mMaxDepth(std::numeric_limits<std::size_t>::max())
 {
 }
 
@@ -89,9 +91,9 @@ bool Connect4Board::rollBackMove()
 
 		for (size_t i = 0; i < mHeight; ++i)
 		{
-			if (!mCells[moveHistory.top()][i].has_value())
+			if (mCells[moveHistory.top()][mHeight - i - 1].has_value())
 			{
-				mCells[x][i - 1].reset();
+				mCells[x][mHeight - i - 1].reset();
 				moveHistory.pop();
 				return true;
 			}
@@ -356,6 +358,8 @@ size_t Connect4Board::maxConnections(const Connect4::Role& player) const
 size_t Connect4Board::countHoriz(const Connect4::Role& player) const
 {
 	size_t maxCount = 0;
+	size_t count = 0;
+	bool emptyPass = false;
 
 	std::optional<Connect4::Role> temp;
 
@@ -363,19 +367,29 @@ size_t Connect4Board::countHoriz(const Connect4::Role& player) const
 		for (size_t j = 0; j < mWidth; ++j) {
 			temp = getItemAt(j, i);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if (!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		emptyPass = false;
+		count = 0;
 	}
 
 	return maxCount;
@@ -384,6 +398,8 @@ size_t Connect4Board::countHoriz(const Connect4::Role& player) const
 size_t Connect4Board::countVert(const Connect4::Role& player) const
 {
 	size_t maxCount = 0;
+	size_t count = 0;
+	bool emptyPass = false;
 
 	std::optional<Connect4::Role> temp;
 
@@ -391,19 +407,29 @@ size_t Connect4Board::countVert(const Connect4::Role& player) const
 		for (size_t j = 0; j < mHeight; ++j) {
 			temp = getItemAt(i, j);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if (!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		emptyPass = false;
+		count = 0;
 	}
 
 	return maxCount;
@@ -412,6 +438,8 @@ size_t Connect4Board::countVert(const Connect4::Role& player) const
 size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 {
 	size_t maxCount = 0;
+	size_t count = 0;
+	bool emptyPass = false;
 
 	std::optional<Connect4::Role> temp;
 
@@ -423,19 +451,29 @@ size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 
 			temp = getItemAt(j + i, j);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if (!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		emptyPass = false;
+		count = 0;
 	}
 
 	for (size_t i = 0; i < mHeight; ++i) {
@@ -446,19 +484,29 @@ size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 
 			temp = getItemAt(j, j + i);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if (!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		count = 0;
+		emptyPass = false;
 	}
 
 	return maxCount;
@@ -467,6 +515,8 @@ size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 {
 	size_t maxCount = 0;
+	size_t count = 0;
+	bool emptyPass = false;
 
 	std::optional<Connect4::Role> temp;
 
@@ -478,19 +528,28 @@ size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 
 			temp = getItemAt(mWidth - 1 - j - i, j);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if (!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		count = 0;
 	}
 
 	for (size_t i = 0; i < mHeight; ++i) {
@@ -501,19 +560,29 @@ size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 
 			temp = getItemAt(mWidth - 1 - j, j + i);
 
-			if (!temp.has_value()) {
+			if (!temp.has_value() && !emptyPass) {
+				emptyPass = true;
+				break;
+			}
+			else if(!temp.has_value()) {
+				emptyPass = false;
 				break;
 			}
 
 			if (temp.value() == player)
 			{
-				++maxCount;
+				++count;
+				if (count > maxCount)
+				{
+					maxCount = count;
+				}
 			}
 			else {
-				maxCount = 0;
+				count = 0;
 			}
 		}
-		maxCount = 0;
+		emptyPass = false;
+		count = 0;
 	}
 
 	return maxCount;
@@ -521,6 +590,11 @@ size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 
 bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 {
+	if (checkVictory().has_value())
+	{
+		return false;
+	}
+
 	size_t countP1 = 0;
 	size_t countP2 = 0;
 
@@ -584,12 +658,15 @@ size_t Connect4Board::depthFirstSearch() const
 	*tempBoard = *this;
 	
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
-	while (!(tree.back()->hasParent() && currentMove  >= mWidth))
+	while (tree.back()->hasParent() || currentMove < mWidth)
 	{
 		if (tree.back()->isEmpty())
 		{
-			tree.back()->setParent(nullptr);
+			// TODO : dont't know if setting parent to nullptr will work as intended since this will orhpan the memory
+			// Ideally it would move the object out of scope so that its destructor is called?
+			//tree.back()->setParent(nullptr);
 			tree.pop_back();
+			tree.back()->getChild(currentMove)->~TreeNode<int>();
 
 			if (!tree.back()->isDiscovered())
 			{
@@ -606,6 +683,7 @@ size_t Connect4Board::depthFirstSearch() const
 			else {
 				heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
 			}
+			// TODO: If a child of the root is tree.rbegin()[1] then also evaluate
 
 			tree.rbegin()[1]->setContent(heuristicValue);
 		}
@@ -640,31 +718,46 @@ size_t Connect4Board::depthFirstSearch() const
 			// All children have been evaluated
 			// Rollback to previous node then and pop from vector
 			tempBoard->rollBackMove();
-			tree.back()->setParent(nullptr);
 			tree.pop_back();
+
+			// If not root
+			/*if (tree.back()->hasParent())
+			{
+				// delete children
+				tree.back()->~TreeNode<int>();
+			}*/
 		}
 		
 		// Flip minimax bool and change current player
-		maximisingPlayer = !maximisingPlayer;
-		if (currentPlayer == Connect4::PLAYER1)
+
+		if (!tree.back()->isEmpty())
 		{
-			currentPlayer = Connect4::PLAYER2;
+			maximisingPlayer = !maximisingPlayer;
+			if (currentPlayer == Connect4::PLAYER1)
+			{
+				currentPlayer = Connect4::PLAYER2;
+			}
+			else {
+				currentPlayer = Connect4::PLAYER1;
+			}
 		}
-		else {
-			currentPlayer = Connect4::PLAYER1;
-		}
+		
+
+		//std::cout << currentMove << std::endl;
+		//help::displayConnect4(*tempBoard);
+
 
 	}
 
 	// Extract best move from the tree based on 
 	size_t bestMove = 3;
 	heuristicValue = root->getContent();
-	for (size_t i = 0; i < mWidth; ++i)
+	for (size_t i = 0; i < root->getChildrenSize(); ++i)
 	{
-		//if (root->getChild(i)->getContent() == heuristicValue)
-		//{
-		//	bestMove = i;
-		//}
+		if (root->getChild(i)->getContent() == heuristicValue)
+		{
+			bestMove = i;
+		}
 	}
 
 	delete root;
