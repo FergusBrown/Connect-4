@@ -53,6 +53,7 @@ template<typename T>
 inline void TreeNode<T>::appendEmptyChild()
 {
 	TreeNode<T>* child = new TreeNode<T>(this);
+
 	mChildren.push_back(child);
 }
 
@@ -66,10 +67,10 @@ const T TreeNode<T>::getContent() const
 template<typename T>
 inline TreeNode<T>* TreeNode<T>::getChild(int position)
 {
-	if (mChildren[position]->isEmpty())
-	{
-		return nullptr;
-	}
+	//if (mChildren[position].empty())
+	//{
+	//	return nullptr;
+	//}
 
 	return mChildren[position];
 }

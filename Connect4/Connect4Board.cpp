@@ -587,7 +587,6 @@ size_t Connect4Board::depthFirstSearch() const
 	while (!(tree.back()->hasParent() && currentMove  >= mWidth))
 	{
 
-
 		if (tree.back()->isEmpty())
 		{
 			tree.back()->setParent(nullptr);
@@ -595,7 +594,7 @@ size_t Connect4Board::depthFirstSearch() const
 
 			if (!tree.back()->isDiscovered())
 			{
-				heuristicValue = evaluateBoard(*tempBoard);
+				heuristicValue = evaluateBoard(*tempBoard, currentPlayer);
 				tree.back()->setContent(heuristicValue);
 				tree.back()->setDiscovered();
 			}
@@ -611,7 +610,6 @@ size_t Connect4Board::depthFirstSearch() const
 
 			tree.rbegin()[1]->setContent(heuristicValue);
 		}
-		
 		
 		currentMove = tree.back()->getChildrenSize();
 
@@ -647,17 +645,16 @@ size_t Connect4Board::depthFirstSearch() const
 			tree.pop_back();
 		}
 		
+		// Flip minimax bool and change current player
+		maximisingPlayer = !maximisingPlayer;
+		if (currentPlayer == Connect4::PLAYER1)
+		{
+			currentPlayer = Connect4::PLAYER2;
+		}
+		else {
+			currentPlayer = Connect4::PLAYER1;
+		}
 
-	}
-
-	// Flip minimax bool and change current player
-	maximisingPlayer = !maximisingPlayer;
-	if (currentPlayer == Connect4::PLAYER1)
-	{
-		currentPlayer = Connect4::PLAYER2;
-	}
-	else {
-		currentPlayer = Connect4::PLAYER1;
 	}
 
 	// Extract best move from the tree based on 
@@ -678,14 +675,11 @@ size_t Connect4Board::depthFirstSearch() const
 }
 
 // Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
-int Connect4Board::evaluateBoard(const Connect4Board& board) const
+int Connect4Board::evaluateBoard(const Connect4Board& board, const Connect4::Role player) const
 {
-
-	Connect4::Role turnPlayer = board.checkPlayerTurn();
-	size_t maxCount = board.maxConnections(turnPlayer);
+	size_t maxCount = board.maxConnections(player);
 
 	int heuristicValue;
-
 
 	switch (maxCount) {
 
@@ -694,37 +688,37 @@ int Connect4Board::evaluateBoard(const Connect4Board& board) const
 		break;
 
 	case 3:
-		heuristicValue = featureTwo(board);
+		heuristicValue = featureTwo(board, player);
 		if (heuristicValue == INT_MAX)
 		{
 			break;
 		}
-		heuristicValue += featureThree(board) + featureFour(board);
+		heuristicValue += featureThree(board, player) + featureFour(board, player);
 		break;
 
 	case 2:
-		heuristicValue = featureThree(board) + featureFour(board);
+		heuristicValue = featureThree(board, player) + featureFour(board, player);
 		break;
 
 	default:
-		heuristicValue = featureFour(board);
+		heuristicValue = featureFour(board, player);
 		break;
 	}
 
 	return heuristicValue;
 }
 
-int Connect4Board::featureTwo(const Connect4Board& board) const
+int Connect4Board::featureTwo(const Connect4Board& board, const Connect4::Role player) const
 {
 	return 0;
 }
 
-int Connect4Board::featureThree(const Connect4Board& board) const
+int Connect4Board::featureThree(const Connect4Board& board, const Connect4::Role player) const
 {
 	return 0;
 }
 
-int Connect4Board::featureFour(const Connect4Board& board) const
+int Connect4Board::featureFour(const Connect4Board& board, const Connect4::Role player) const
 {
 	return 0;
 }

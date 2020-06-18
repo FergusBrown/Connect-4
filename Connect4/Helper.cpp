@@ -137,7 +137,7 @@ void help::agentLoopP2(Connect4Board& board)
 		input = board.getBestMove();
 		board.addPiece(input, Connect4::PLAYER2);
 		help::displayConnect4(board);
-		std::cout << "AI played column" << input + 1 << std::endl;
+		std::cout << "AI played column " << input + 1 << std::endl;
 	}
 
 	help::declareWinner(board);

@@ -64,9 +64,9 @@ private:
     size_t depthFirstSearch() const;
 
     // - Heuristic evaluation
-    int evaluateBoard(const Connect4Board& board) const;
-    int featureTwo(const Connect4Board& board) const;
-    int featureThree(const Connect4Board& board) const;
-    int featureFour(const Connect4Board& board) const;
+    int evaluateBoard(const Connect4Board& board, const Connect4::Role player) const;
+    int featureTwo(const Connect4Board& board, const Connect4::Role player) const;
+    int featureThree(const Connect4Board& board, const Connect4::Role player) const;
+    int featureFour(const Connect4Board& board, const Connect4::Role player) const;
 };
 
