@@ -630,7 +630,7 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 
 // Create and traverse tree with depth first search -> https://en.wikipedia.org/wiki/Depth-first_search
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
-size_t Connect4Board::depthFirstSearch() const
+size_t Connect4Board::depthFirstSearch(size_t maxDepth) const
 {
 	// Find current player to maximise for
 	Connect4::Role currentPlayer = checkPlayerTurn();
