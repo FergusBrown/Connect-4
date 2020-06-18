@@ -586,7 +586,6 @@ size_t Connect4Board::depthFirstSearch() const
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
 	while (!(tree.back()->hasParent() && currentMove  >= mWidth))
 	{
-
 		if (tree.back()->isEmpty())
 		{
 			tree.back()->setParent(nullptr);
