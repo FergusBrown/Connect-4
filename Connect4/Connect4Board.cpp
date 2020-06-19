@@ -7,13 +7,15 @@
 // REMOVE ONCE DONE
 #include "Helper.h"
 
-size_t Connect4Board::getBestMove()
+size_t Connect4Board::getBestMove(const int maxDepth) const
 {
-	return depthFirstSearch();
+	//size_t maxDepth = 8;
+
+	return depthFirstSearch(maxDepth);
 }
 
 Connect4Board::Connect4Board()
-	: Grid<Connect4::Role>(7, 6), mMaxDepth(std::numeric_limits<std::size_t>::max())
+	: Grid<Connect4::Role>(7, 6)
 {
 }
 
@@ -630,10 +632,12 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 
 // Create and traverse tree with depth first search -> https://en.wikipedia.org/wiki/Depth-first_search
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
-size_t Connect4Board::depthFirstSearch(size_t maxDepth) const
+size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 {
 	// Find current player to maximise for
 	Connect4::Role currentPlayer = checkPlayerTurn();
+
+	size_t depth = 0;
 
 	// This is the index of the child to a node
 	size_t currentMove = 0;
@@ -659,14 +663,20 @@ size_t Connect4Board::depthFirstSearch(size_t maxDepth) const
 	
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
 	while (tree.back()->hasParent() || currentMove < mWidth)
-	{
-		if (tree.back()->isEmpty())
+	{	
+
+		if (tree.back()->isEmpty() || depth > maxDepth)
 		{
 			// TODO : dont't know if setting parent to nullptr will work as intended since this will orhpan the memory
 			// Ideally it would move the object out of scope so that its destructor is called?
 			//tree.back()->setParent(nullptr);
 			tree.pop_back();
 			tree.back()->getChild(currentMove)->~TreeNode<int>();
+			if (depth >= maxDepth)
+			{
+				tempBoard->rollBackMove();
+			}
+			--depth;
 
 			if (!tree.back()->isDiscovered())
 			{
@@ -687,8 +697,9 @@ size_t Connect4Board::depthFirstSearch(size_t maxDepth) const
 
 			tree.rbegin()[1]->setContent(heuristicValue);
 		}
-		
+
 		currentMove = tree.back()->getChildrenSize();
+		currentPlayer = tempBoard->checkPlayerTurn();
 
 		if (currentMove < mWidth)
 		{
@@ -713,38 +724,27 @@ size_t Connect4Board::depthFirstSearch(size_t maxDepth) const
 				tree.back()->appendEmptyChild();
 				tree.push_back(tree.back()->getChild(currentMove));
 			}
+			++depth;
 		}
 		else {
 			// All children have been evaluated
 			// Rollback to previous node then and pop from vector
 			tempBoard->rollBackMove();
 			tree.pop_back();
-
-			// If not root
-			/*if (tree.back()->hasParent())
-			{
-				// delete children
-				tree.back()->~TreeNode<int>();
-			}*/
+			--depth;
 		}
 		
 		// Flip minimax bool and change current player
 
-		if (!tree.back()->isEmpty())
+		if (!tree.back()->isEmpty() || depth > maxDepth)
 		{
 			maximisingPlayer = !maximisingPlayer;
-			if (currentPlayer == Connect4::PLAYER1)
-			{
-				currentPlayer = Connect4::PLAYER2;
-			}
-			else {
-				currentPlayer = Connect4::PLAYER1;
-			}
 		}
 		
 
-		//std::cout << currentMove << std::endl;
-		//help::displayConnect4(*tempBoard);
+		std::cout << currentMove << std::endl;
+		std::cout << depth << std::endl;
+		help::displayConnect4(*tempBoard);
 
 
 	}

@@ -36,7 +36,7 @@ public:
     bool rollBackMove();
 
     // AI
-    size_t getBestMove();
+    size_t getBestMove(const int maxDepth) const;
     
 
 private:
@@ -61,7 +61,7 @@ private:
 
     // Members for AI/tree search
     //size_t mMaxDepth;
-    size_t depthFirstSearch(size_t maxDepth) const;
+    size_t depthFirstSearch(const size_t maxDepth) const;
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4Board& board, const Connect4::Role player) const;
