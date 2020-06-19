@@ -645,7 +645,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 	// Indicates whether current node should look to max or minimise
 	// This should be flipped whenever depth increments or decrements
 	bool maximisingPlayer = true;
-	int defaultValue = INT_MIN;
+	//int defaultValue = INT_MIN;
 
 	// Value to store in node
 	int heuristicValue = INT_MIN;
@@ -667,9 +667,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 
 		if (tree.back()->isEmpty() || depth > maxDepth)
 		{
-			// TODO : dont't know if setting parent to nullptr will work as intended since this will orhpan the memory
-			// Ideally it would move the object out of scope so that its destructor is called?
-			//tree.back()->setParent(nullptr);
 			tree.pop_back();
 			tree.back()->getChild(currentMove)->~TreeNode<int>();
 			if (depth >= maxDepth)
@@ -694,7 +691,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 				heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
 			}
 			// TODO: If a child of the root is tree.rbegin()[1] then also evaluate
-
 			tree.rbegin()[1]->setContent(heuristicValue);
 		}
 
@@ -734,19 +730,17 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 			--depth;
 		}
 		
-		// Flip minimax bool and change current player
-
+		// Flip minimax bool
 		if (!tree.back()->isEmpty() || depth > maxDepth)
 		{
 			maximisingPlayer = !maximisingPlayer;
 		}
-		
+
+		currentMove = tree.back()->getChildrenSize();
 
 		std::cout << currentMove << std::endl;
 		std::cout << depth << std::endl;
 		help::displayConnect4(*tempBoard);
-
-
 	}
 
 	// Extract best move from the tree based on 
