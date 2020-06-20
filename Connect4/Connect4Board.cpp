@@ -705,9 +705,9 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 			
 		}
 
-		std::cout << currentMove << std::endl;
-		std::cout << depth << std::endl;
-		help::displayConnect4(*tempBoard);
+		//std::cout << currentMove << std::endl;
+		//std::cout << depth << std::endl;
+		//help::displayConnect4(*tempBoard);
 
 		// Change node board details for current node
 		currentMove = tree.back()->getChildrenSize();
@@ -726,7 +726,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 			//isLeaf = false;
 		}
 
-		std::cout << heuristicValue << std::endl;
+		//std::cout << heuristicValue << std::endl;
 
 		currentPlayer = tempBoard->checkPlayerTurn();
 		if (currentPlayer == maximisingPlayerIdentity)
