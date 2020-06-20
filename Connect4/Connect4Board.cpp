@@ -873,6 +873,13 @@ int Connect4Board::evaluateBoard(const Connect4::Role player) const
 	int heuristicValue;
 
 	switch (maxCount) {
+	case 6:
+		heuristicValue = INT_MAX;
+		break;
+
+	case 5:
+		heuristicValue = INT_MAX;
+		break;
 
 	case 4:
 		heuristicValue = INT_MAX;
