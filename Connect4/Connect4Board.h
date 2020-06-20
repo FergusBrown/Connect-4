@@ -46,6 +46,7 @@ private:
     bool checkVert(std::optional<Connect4::Role>& winner) const;
     bool checkDiagL(std::optional<Connect4::Role>& winner) const;
     bool checkDiagR(std::optional<Connect4::Role>& winner) const;
+    bool checkDraw() const;
 
     // Count number of connections
     size_t maxConnections(const Connect4::Role& player) const;
@@ -65,9 +66,9 @@ private:
     size_t depthFirstSearch(const size_t maxDepth) const;
 
     // - Heuristic evaluation
-    int evaluateBoard(const Connect4Board& board, const Connect4::Role player) const;
-    int featureTwo(const Connect4Board& board, const Connect4::Role player, const size_t horiz, const size_t vert, const size_t diagL, const size_t diagR, const size_t max) const;
-    int featureThree(const Connect4Board& board, const Connect4::Role player) const;
-    int featureFour(const Connect4Board& board, const Connect4::Role player) const;
+    int evaluateBoard(const Connect4::Role player) const;
+    int featureTwo(const Connect4::Role player, const size_t horiz, const size_t vert, const size_t diagL, const size_t diagR, const size_t max) const;
+    int featureThree(const Connect4::Role player) const;
+    int featureFour(const Connect4::Role player) const;
 };
 

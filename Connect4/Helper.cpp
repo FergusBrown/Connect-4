@@ -143,20 +143,25 @@ void help::agentLoopP2(Connect4Board& board)
 	help::declareWinner(board);
 }
 
-
 // Any advantage of passing a pointer like this
 void help::declareWinner(const Connect4Board& board)
 {
 
-	switch (board.checkVictory().value())
+	if (board.checkVictory().has_value())
 	{
-	case Connect4::PLAYER1:
-		std::cout << "P1 wins!" << std::endl;
-		break;
-	case Connect4::PLAYER2:
-		std::cout << "P2 wins!" << std::endl;
-		break;
-	default:
+		switch (board.checkVictory().value())
+		{
+		case Connect4::PLAYER1:
+			std::cout << "P1 wins!" << std::endl;
+			break;
+		case Connect4::PLAYER2:
+			std::cout << "P2 wins!" << std::endl;
+			break;
+		default:
+			std::cout << "Nobody has won!" << std::endl;
+		}
+	}
+	else {
 		std::cout << "Nobody has won!" << std::endl;
 	}
 }
