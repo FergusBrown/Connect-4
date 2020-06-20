@@ -31,6 +31,7 @@ public:
     bool checkFinished() const;
     std::optional<Connect4::Role> checkVictory() const;
     bool checkPlayerVictory(const Connect4::Role& player) const;
+    std::stack<size_t> getMoveHistory();
 
     Connect4::Role checkPlayerTurn() const;
     bool rollBackMove();
@@ -65,7 +66,7 @@ private:
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4Board& board, const Connect4::Role player) const;
-    int featureTwo(const Connect4Board& board, const Connect4::Role player) const;
+    int featureTwo(const Connect4Board& board, const Connect4::Role player, const size_t horiz, const size_t vert, const size_t diagL, const size_t diagR, const size_t max) const;
     int featureThree(const Connect4Board& board, const Connect4::Role player) const;
     int featureFour(const Connect4Board& board, const Connect4::Role player) const;
 };

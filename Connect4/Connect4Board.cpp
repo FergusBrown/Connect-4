@@ -73,6 +73,11 @@ bool Connect4Board::checkPlayerVictory(const Connect4::Role& player) const
 	
 }
 
+std::stack<size_t> Connect4Board::getMoveHistory()
+{
+	return moveHistory;
+}
+
 Connect4::Role Connect4Board::checkPlayerTurn() const
 {
 	if (moveHistory.size() % 2 == 1)
@@ -634,10 +639,12 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
 size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 {
-	// Find current player to maximise for
-	Connect4::Role currentPlayer = checkPlayerTurn();
+	// Find current player to maximise 
+	const Connect4::Role maximisingPlayerIdentity = checkPlayerTurn();
+	Connect4::Role currentPlayer = maximisingPlayerIdentity;
 
 	size_t depth = 0;
+	const size_t moveCount = moveHistory.size();
 
 	// This is the index of the child to a node
 	size_t currentMove = 0;
@@ -663,27 +670,34 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 	
 	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
 	while (tree.back()->hasParent() || currentMove < mWidth)
-	{	
+	{
 
-		if (tree.back()->isEmpty() || depth > maxDepth)
+		if (tree.back()->isEmpty())
 		{
-			tree.pop_back();
-			tree.back()->getChild(currentMove)->~TreeNode<int>();
-			if (depth >= maxDepth)
-			{
-				tempBoard->rollBackMove();
-			}
-			--depth;
 
+			tree.pop_back();
+			// This destructor does not work?
+			tree.back()->getChild(currentMove)->~TreeNode<int>();
+			
 			if (!tree.back()->isDiscovered())
 			{
 				heuristicValue = evaluateBoard(*tempBoard, currentPlayer);
+				if (!maximisingPlayer)
+				{
+					heuristicValue = -heuristicValue;
+				}
 				tree.back()->setContent(heuristicValue);
-				tree.back()->setDiscovered();
+
+				// set all nodes in stack discovered so that a heuristic is not calculated for nodes below this point
+				for(auto * node : tree)
+				{
+					node->setDiscovered();
+				}
+				//tree.back()->setDiscovered();
 			}
 
 			// Perform minimax
-			if (maximisingPlayer)
+			if (!maximisingPlayer)
 			{
 				heuristicValue = std::max(tree.rbegin()[1]->getContent(), tree.back()->getContent());
 			}
@@ -695,15 +709,21 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 		}
 
 		currentMove = tree.back()->getChildrenSize();
+		depth = tempBoard->getMoveHistory().size() - moveCount;
+
 		currentPlayer = tempBoard->checkPlayerTurn();
 
-		if (currentMove < mWidth)
+		// TODO : can simplify this to immediately perform minimax once max depth is reached
+		if (currentMove < mWidth )
 		{
 			// create child and add it to the vector
 			// If a pice can be added then create a child with a child with appropriate value
 			// Otherwise create an empty child
-			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
+			if (depth == maxDepth)
 			{
+				tree.back()->appendEmptyChild();
+				tree.push_back(tree.back()->getChild(currentMove));
+			} else if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer)) {
 				
 				if (maximisingPlayer)
 				{
@@ -720,23 +740,30 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 				tree.back()->appendEmptyChild();
 				tree.push_back(tree.back()->getChild(currentMove));
 			}
-			++depth;
 		}
 		else {
 			// All children have been evaluated
 			// Rollback to previous node then and pop from vector
 			tempBoard->rollBackMove();
 			tree.pop_back();
-			--depth;
 		}
 		
 		// Flip minimax bool
-		if (!tree.back()->isEmpty() || depth > maxDepth)
+		if (!tree.back()->isEmpty())
 		{
 			maximisingPlayer = !maximisingPlayer;
 		}
 
 		currentMove = tree.back()->getChildrenSize();
+		currentPlayer = tempBoard->checkPlayerTurn();
+		if (currentPlayer == maximisingPlayerIdentity)
+		{
+			maximisingPlayer = true;
+		}
+		else {
+			maximisingPlayer = false;
+		}
+		//depth = tempBoard->getMoveHistory().size() - moveCount;
 
 		std::cout << currentMove << std::endl;
 		std::cout << depth << std::endl;
@@ -760,10 +787,19 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 	return bestMove;
 }
 
+struct Coord {
+	int x, y;
+};
+
 // Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
 int Connect4Board::evaluateBoard(const Connect4Board& board, const Connect4::Role player) const
 {
-	size_t maxCount = board.maxConnections(player);
+	//size_t maxCount = board.maxConnections(player);
+	size_t horizCount = countHoriz(player);
+	size_t vertCount = countVert(player);
+	size_t diagLCount = countDiagL(player);
+	size_t diagRCount = countDiagR(player);
+	size_t maxCount = std::max<size_t>({ vertCount, horizCount, diagLCount, diagRCount });
 
 	int heuristicValue;
 
@@ -774,7 +810,7 @@ int Connect4Board::evaluateBoard(const Connect4Board& board, const Connect4::Rol
 		break;
 
 	case 3:
-		heuristicValue = featureTwo(board, player);
+		heuristicValue = featureTwo(board, player, horizCount, vertCount, diagLCount, diagRCount, maxCount);
 		if (heuristicValue == INT_MAX)
 		{
 			break;
@@ -794,17 +830,63 @@ int Connect4Board::evaluateBoard(const Connect4Board& board, const Connect4::Rol
 	return heuristicValue;
 }
 
-int Connect4Board::featureTwo(const Connect4Board& board, const Connect4::Role player) const
+int Connect4Board::featureTwo(const Connect4Board& board, const Connect4::Role player, const size_t horiz, const size_t vert, const size_t diagL, const size_t diagR, const size_t max) const
 {
-	return 0;
+	return 900000;
 }
 
 int Connect4Board::featureThree(const Connect4Board& board, const Connect4::Role player) const
 {
-	return 0;
+	return 25000;
 }
 
 int Connect4Board::featureFour(const Connect4Board& board, const Connect4::Role player) const
 {
-	return 0;
+	int score = 0;
+	size_t height = board.getHeight();
+	size_t width = board.getWidth();
+	std::optional<Connect4::Role> square;
+
+	for (size_t i = 0; i < width; ++i)
+	{
+		for (size_t j = 0; j < height; ++j)
+		{
+			square = board.getItemAt(i, height - 1 - j);
+			if (square.has_value())
+			{
+				if (square.value() == player)
+				{
+					switch (i) {
+					case 0:
+						score += 40;
+						break;
+					case 1:
+						score += 70;
+						break;
+					case 2:
+						score += 120;
+						break;
+					case 3:
+						score += 200;
+						break;
+					case 4:
+						score += 120;
+						break;
+					case 5:
+						score += 70;
+						break;
+					case 6:
+						score += 40;
+						break;
+					}
+				}
+				else {
+					break;
+				}
+				
+			}
+		}
+	}
+
+	return score;
 }
