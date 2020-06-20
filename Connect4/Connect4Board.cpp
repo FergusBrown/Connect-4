@@ -666,105 +666,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 	while (tree.back()->hasParent() || currentMove < mWidth)
 	{
 
-		/*if (tree.back()->isEmpty())
-		{
-
-			tree.pop_back();
-			// This destructor does not work?
-			tree.back()->getChild(currentMove)->~TreeNode<int>();
-			
-			if (!tree.back()->isDiscovered())
-			{
-				heuristicValue = evaluateBoard(*tempBoard, currentPlayer);
-				if (!maximisingPlayer)
-				{
-					heuristicValue = -heuristicValue;
-				}
-				tree.back()->setContent(heuristicValue);
-
-				// set all nodes in stack discovered so that a heuristic is not calculated for nodes below this point
-				for(auto * node : tree)
-				{
-					node->setDiscovered();
-				}
-				//tree.back()->setDiscovered();
-			}
-
-			// Perform minimax
-			if (!maximisingPlayer)
-			{
-				heuristicValue = std::max(tree.rbegin()[1]->getContent(), tree.back()->getContent());
-			}
-			else {
-				heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
-			}
-			// TODO: If a child of the root is tree.rbegin()[1] then also evaluate
-			tree.rbegin()[1]->setContent(heuristicValue);
-		}
-
-		currentMove = tree.back()->getChildrenSize();
-		depth = tempBoard->getMoveHistory().size() - moveCount;
-
-		currentPlayer = tempBoard->checkPlayerTurn();
-
-		// TODO : can simplify this to immediately perform minimax once max depth is reached
-		if (currentMove < mWidth )
-		{
-			// create child and add it to the vector
-			// If a pice can be added then create a child with a child with appropriate value
-			// Otherwise create an empty child
-			if (depth == maxDepth)
-			{
-				tree.back()->appendEmptyChild();
-				tree.push_back(tree.back()->getChild(currentMove));
-			} else if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer)) {
-				
-				if (maximisingPlayer)
-				{
-					heuristicValue = INT_MAX;
-					tree.back()->appendChild(heuristicValue);
-				}
-				else {
-					heuristicValue = INT_MIN;
-					tree.back()->appendChild(heuristicValue);
-				}
-				tree.push_back(tree.back()->getChild(currentMove));
-			}
-			else {
-				tree.back()->appendEmptyChild();
-				tree.push_back(tree.back()->getChild(currentMove));
-			}
-		}
-		else {
-			// All children have been evaluated
-			// Rollback to previous node then and pop from vector
-			tempBoard->rollBackMove();
-			tree.pop_back();
-		}
-		
-		// Flip minimax bool
-		if (!tree.back()->isEmpty())
-		{
-			maximisingPlayer = !maximisingPlayer;
-		}
-
-		currentMove = tree.back()->getChildrenSize();
-		currentPlayer = tempBoard->checkPlayerTurn();
-		if (currentPlayer == maximisingPlayerIdentity)
-		{
-			maximisingPlayer = true;
-		}
-		else {
-			maximisingPlayer = false;
-		}
-		//depth = tempBoard->getMoveHistory().size() - moveCount;
-
-		std::cout << currentMove << std::endl;
-		std::cout << depth << std::endl;
-		help::displayConnect4(*tempBoard);*/
-
-
-
 		if (currentMove < mWidth && depth < maxDepth)
 		{
 			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
@@ -855,10 +756,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 
 	return bestMove;
 }
-
-struct Coord {
-	int x, y;
-};
 
 // Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
 int Connect4Board::evaluateBoard(const Connect4::Role player) const
