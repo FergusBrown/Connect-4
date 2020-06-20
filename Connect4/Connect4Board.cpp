@@ -666,7 +666,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 	while (tree.back()->hasParent() || currentMove < mWidth)
 	{
 
-		if (currentMove < mWidth && depth < maxDepth)
+		if (currentMove < mWidth && depth < maxDepth && !isLeaf)
 		{
 			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
 			{
@@ -723,7 +723,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 				heuristicValue = -heuristicValue;
 			}
 			tree.back()->setContent(heuristicValue);
-			isLeaf = false;
+			//isLeaf = false;
 		}
 
 		std::cout << heuristicValue << std::endl;
