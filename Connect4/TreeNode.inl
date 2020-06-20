@@ -2,14 +2,20 @@
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent) :
-	mParent(parent), mEmpty(true), mDiscovered(false)
+	mParent(parent), mEmpty(true), mDiscovered(false), mBeta(INT_MAX), mAlpha(INT_MIN)
 {
 }
 
 // Should this be inline?
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
-	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false)
+	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false), mBeta(INT_MAX), mAlpha(INT_MIN)
+{
+}
+
+template<typename T>
+TreeNode<T>::TreeNode(TreeNode* parent, T& content, int alpha, int beta) :
+	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false), mBeta(beta), mAlpha(alpha)
 {
 }
 
@@ -43,9 +49,28 @@ inline void TreeNode<T>::setDiscovered()
 }
 
 template<typename T>
+inline void TreeNode<T>::setAlpha(const int value)
+{
+	mAlpha = value;
+}
+
+template<typename T>
+inline void TreeNode<T>::setBeta(const int value)
+{
+	mBeta = value;
+}
+
+template<typename T>
 void TreeNode<T>::appendChild(T& content)
 {
 	TreeNode<T>* child = new TreeNode<T>(this, content);
+	mChildren.push_back(child);
+}
+
+template<typename T>
+inline void TreeNode<T>::appendABChild(T& content, int alpha, int beta)
+{
+	TreeNode<T>* child = new TreeNode<T>(this, content, alpha, beta);
 	mChildren.push_back(child);
 }
 
@@ -67,12 +92,7 @@ const T TreeNode<T>::getContent() const
 template<typename T>
 inline TreeNode<T>* TreeNode<T>::getChild(int position)
 {
-	//if (mChildren[position].empty())
-	//{
-	//	return nullptr;
-	//}
-
-	return mChildren[position];
+		return mChildren[position];
 }
 
 template<typename T>
@@ -85,6 +105,18 @@ template<typename T>
 inline size_t TreeNode<T>::getChildrenSize() const
 {
 	return mChildren.size();
+}
+
+template<typename T>
+inline int TreeNode<T>::getAlpha() const
+{
+	return mAlpha;
+}
+
+template<typename T>
+inline int TreeNode<T>::getBeta() const
+{
+	return mBeta;
 }
 
 template<typename T>
