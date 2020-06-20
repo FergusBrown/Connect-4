@@ -856,6 +856,7 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 
 				if (tree.back()->getAlpha() >=  tree.back()->getBeta())
 				{
+					std::cout << "skip" << std::endl;
 					int childNum = tree.back()->getChildrenSize();
 					for (int i = childNum; i <= mWidth; ++i)
 					{
@@ -868,7 +869,7 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 
 		//std::cout << currentMove << std::endl;
 		//std::cout << depth << std::endl;
-		help::displayConnect4(*tempBoard);
+		//help::displayConnect4(*tempBoard);
 
 		// Change node board details for current node
 		currentMove = tree.back()->getChildrenSize();

@@ -37,9 +37,6 @@ public:
 	void appendABChild(T& content, int alpha, int beta);
 	void appendEmptyChild();
 
-
-
-
 private:
 	TreeNode* mParent;
 	bool mEmpty;
