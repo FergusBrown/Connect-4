@@ -417,6 +417,7 @@ size_t Connect4Board::countHoriz(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
@@ -457,6 +458,7 @@ size_t Connect4Board::countVert(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
@@ -501,6 +503,7 @@ size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
@@ -534,6 +537,7 @@ size_t Connect4Board::countDiagL(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
@@ -578,9 +582,11 @@ size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
+		emptyPass = false;
 		count = 0;
 	}
 
@@ -610,6 +616,7 @@ size_t Connect4Board::countDiagR(const Connect4::Role& player) const
 				}
 			}
 			else {
+				emptyPass = false;
 				count = 0;
 			}
 		}
@@ -719,7 +726,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 
 		//std::cout << currentMove << std::endl;
 		//std::cout << depth << std::endl;
-		//help::displayConnect4(*tempBoard);
+		help::displayConnect4(*tempBoard);
 
 		// Change node board details for current node
 		currentMove = tree.back()->getChildrenSize();
