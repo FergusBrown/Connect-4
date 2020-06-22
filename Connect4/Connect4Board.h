@@ -19,8 +19,6 @@ namespace Connect4
 class Connect4Board :
     public Grid<Connect4::Role>
 {
-    //using Grid::Grid();
-
 
 public:
     // Constructors
@@ -37,7 +35,7 @@ public:
     bool rollBackMove();
 
     // AI
-    size_t getBestMove(const int maxDepth) const;
+    size_t getBestMove(const int searchType, const int maxDepth) const;
     
 
 private:
@@ -64,6 +62,7 @@ private:
     // Members for AI/tree search
     size_t depthFirstSearch(const size_t maxDepth) const;
     size_t alphaBetaSearch(const size_t maxDepth) const;
+    size_t monteCarloSearch(const size_t maxDepth) const;
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4::Role player) const;

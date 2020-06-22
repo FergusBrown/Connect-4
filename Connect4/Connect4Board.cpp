@@ -7,18 +7,17 @@
 // REMOVE ONCE DONE
 #include "Helper.h"
 
-size_t Connect4Board::getBestMove(const int maxDepth) const
+size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) const
 {
-	size_t searchSelect =1;
-
-
-	switch (searchSelect) {
+	switch (searchType) {
 	case 0: 
 		return depthFirstSearch(maxDepth);
 		break;
 	case 1:
 		return alphaBetaSearch(maxDepth);
 		break;
+	case 2:
+		return monteCarloSearch(maxDepth);
 	default:
 		return depthFirstSearch(maxDepth);
 		break;
@@ -724,10 +723,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 			
 		}
 
-		//std::cout << currentMove << std::endl;
-		//std::cout << depth << std::endl;
-		help::displayConnect4(*tempBoard);
-
 		// Change node board details for current node
 		currentMove = tree.back()->getChildrenSize();
 		depth = tempBoard->getMoveHistory().size() - moveCount;
@@ -743,8 +738,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 			}
 			tree.back()->setContent(heuristicValue);
 		}
-
-		//std::cout << heuristicValue << std::endl;
 
 		currentPlayer = tempBoard->checkPlayerTurn();
 		if (currentPlayer == maximisingPlayerIdentity)
@@ -766,6 +759,7 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 		if (root->getChild(i)->getContent() == heuristicValue)
 		{
 			bestMove = i;
+			break;
 		}
 	}
 
@@ -855,6 +849,7 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 					heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
 					beta = tree.rbegin()[1]->getBeta();
 					tree.rbegin()[1]->setBeta(std::min(beta, heuristicValue));
+					tree.rbegin()[1]->setBeta(std::min(beta, heuristicValue));
 				}
 				tree.rbegin()[1]->setContent(heuristicValue);
 
@@ -863,7 +858,7 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 
 				if (tree.back()->getAlpha() >=  tree.back()->getBeta())
 				{
-					std::cout << "skip" << std::endl;
+					//std::cout << "skip" << std::endl;
 					int childNum = tree.back()->getChildrenSize();
 					for (int i = childNum; i <= mWidth; ++i)
 					{
@@ -873,10 +868,6 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 			}
 
 		}
-
-		//std::cout << currentMove << std::endl;
-		//std::cout << depth << std::endl;
-		//help::displayConnect4(*tempBoard);
 
 		// Change node board details for current node
 		currentMove = tree.back()->getChildrenSize();
@@ -893,8 +884,6 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 			}
 			tree.back()->setContent(heuristicValue);
 		}
-
-		//std::cout << heuristicValue << std::endl;
 
 		currentPlayer = tempBoard->checkPlayerTurn();
 		if (currentPlayer == maximisingPlayerIdentity)
@@ -916,12 +905,128 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 		if (root->getChild(i)->getContent() == heuristicValue)
 		{
 			bestMove = i;
+			break;
 		}
 	}
 
 	delete root;
 	delete tempBoard;
 
+	return bestMove;
+}
+
+// A pure monte carlo search
+size_t Connect4Board::monteCarloSearch(const size_t numPlayouts) const
+{
+
+	// Find current player to maximise 
+	const Connect4::Role maximisingPlayerIdentity = checkPlayerTurn();
+	Connect4::Role currentPlayer = maximisingPlayerIdentity;
+
+	size_t depth = 0;
+	const size_t moveCount = moveHistory.size();
+
+	// This is the index of the child to a node
+	size_t currentMove = 0;
+
+	// Value to store in node
+	int heuristicValue = INT_MIN;
+
+	// Indicates a leaf node
+	bool isLeaf = false;
+
+	// Root node
+	TreeNode<int>* root = new TreeNode<int>(nullptr, heuristicValue);
+
+	// Vector to store tree traversal
+	std::vector<TreeNode<int>*> tree;
+	tree.push_back(root);
+
+	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
+	Connect4Board* tempBoard = new Connect4Board();
+	*tempBoard = *this;
+
+	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
+	while (tree.back()->hasParent() || currentMove < mWidth)
+	{
+
+		if (currentMove < mWidth && depth < maxDepth && !isLeaf)
+		{
+			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
+			{
+				if (maximisingPlayer)
+				{
+					heuristicValue = INT_MAX;
+					tree.back()->appendChild(heuristicValue);
+				}
+				else {
+					heuristicValue = INT_MIN;
+					tree.back()->appendChild(heuristicValue);
+				}
+				tree.push_back(tree.back()->getChild(currentMove));
+			}
+			else {
+				tree.back()->appendEmptyChild();
+			}
+		}
+		else {
+			// Perform Minimax and rollback if not at root
+			if (tree.back()->hasParent())
+			{
+				if (!maximisingPlayer)
+				{
+					heuristicValue = std::max(tree.rbegin()[1]->getContent(), tree.back()->getContent());
+				}
+				else {
+					heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
+				}
+				tree.rbegin()[1]->setContent(heuristicValue);
+
+				tempBoard->rollBackMove();
+				tree.pop_back();
+			}
+
+		}
+
+		// Change node board details for current node
+		currentMove = tree.back()->getChildrenSize();
+		depth = tempBoard->getMoveHistory().size() - moveCount;
+		isLeaf = (depth == maxDepth) || tempBoard->checkVictory().has_value() || tempBoard->checkDraw();
+
+		if (isLeaf)
+		{
+			heuristicValue = tempBoard->evaluateBoard(currentPlayer);
+			if (!maximisingPlayer)
+			{
+				heuristicValue = -heuristicValue;
+			}
+			tree.back()->setContent(heuristicValue);
+		}
+
+		currentPlayer = tempBoard->checkPlayerTurn();
+		if (currentPlayer == maximisingPlayerIdentity)
+		{
+			maximisingPlayer = true;
+		}
+		else {
+			maximisingPlayer = false;
+		}
+	}
+
+	// Extract best move from the tree based on 
+	size_t bestMove = 3;
+	heuristicValue = root->getContent();
+	for (size_t i = 0; i < root->getChildrenSize(); ++i)
+	{
+		if (root->getChild(i)->getContent() == heuristicValue)
+		{
+			bestMove = i;
+			break;
+		}
+	}
+
+	delete root;
+	delete tempBoard;
 	return bestMove;
 }
 
