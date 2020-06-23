@@ -1,5 +1,6 @@
 #pragma once
 #include "Grid.h"
+#include "TreeNode.h"
 #include <stack>
 
 namespace Connect4
@@ -14,6 +15,9 @@ namespace Connect4
     const Role PLAYER2 = Role::P2;
 
     using Board = std::vector<std::vector<Role>>;
+
+    // win score for MCTS
+    const size_t WIN_SCORE = 10;
 }
 
 class Connect4Board :
@@ -62,12 +66,16 @@ private:
     // Members for AI/tree search
     size_t depthFirstSearch(const size_t maxDepth) const;
     size_t alphaBetaSearch(const size_t maxDepth) const;
-    size_t monteCarloSearch(const size_t maxDepth) const;
+    size_t monteCarloSearch(const size_t numPlayouts, const size_t maxTime) const;
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4::Role player) const;
     int featureTwo(const Connect4::Role player, const size_t horiz, const size_t vert, const size_t diagL, const size_t diagR, const size_t max) const;
     int featureThree(const Connect4::Role player) const;
     int featureFour(const Connect4::Role player) const;
+
+    // - MCTS functions
+    TreeNode<int>* selectNode(TreeNode<int>* rootNode);
+
 };
 

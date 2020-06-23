@@ -1,8 +1,8 @@
 #include <limits>
 #include <algorithm>
 #include <initializer_list>
+#include <chrono>
 #include "Connect4Board.h"
-#include "TreeNode.h"
 
 // REMOVE ONCE DONE
 #include "Helper.h"
@@ -915,122 +915,6 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 	return bestMove;
 }
 
-// A pure monte carlo search
-size_t Connect4Board::monteCarloSearch(const size_t numPlayouts) const
-{
-
-	// Find current player to maximise 
-	const Connect4::Role maximisingPlayerIdentity = checkPlayerTurn();
-	Connect4::Role currentPlayer = maximisingPlayerIdentity;
-
-	size_t depth = 0;
-	const size_t moveCount = moveHistory.size();
-
-	// This is the index of the child to a node
-	size_t currentMove = 0;
-
-	// Value to store in node
-	int heuristicValue = INT_MIN;
-
-	// Indicates a leaf node
-	bool isLeaf = false;
-
-	// Root node
-	TreeNode<int>* root = new TreeNode<int>(nullptr, heuristicValue);
-
-	// Vector to store tree traversal
-	std::vector<TreeNode<int>*> tree;
-	tree.push_back(root);
-
-	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
-	Connect4Board* tempBoard = new Connect4Board();
-	*tempBoard = *this;
-
-	// Traverse tree until parent is null (at root) AND all its possible children have been traversed
-	while (tree.back()->hasParent() || currentMove < mWidth)
-	{
-
-		if (currentMove < mWidth && depth < maxDepth && !isLeaf)
-		{
-			if (tempBoard->addPiece(tree.back()->getChildrenSize(), currentPlayer))
-			{
-				if (maximisingPlayer)
-				{
-					heuristicValue = INT_MAX;
-					tree.back()->appendChild(heuristicValue);
-				}
-				else {
-					heuristicValue = INT_MIN;
-					tree.back()->appendChild(heuristicValue);
-				}
-				tree.push_back(tree.back()->getChild(currentMove));
-			}
-			else {
-				tree.back()->appendEmptyChild();
-			}
-		}
-		else {
-			// Perform Minimax and rollback if not at root
-			if (tree.back()->hasParent())
-			{
-				if (!maximisingPlayer)
-				{
-					heuristicValue = std::max(tree.rbegin()[1]->getContent(), tree.back()->getContent());
-				}
-				else {
-					heuristicValue = std::min(tree.rbegin()[1]->getContent(), tree.back()->getContent());
-				}
-				tree.rbegin()[1]->setContent(heuristicValue);
-
-				tempBoard->rollBackMove();
-				tree.pop_back();
-			}
-
-		}
-
-		// Change node board details for current node
-		currentMove = tree.back()->getChildrenSize();
-		depth = tempBoard->getMoveHistory().size() - moveCount;
-		isLeaf = (depth == maxDepth) || tempBoard->checkVictory().has_value() || tempBoard->checkDraw();
-
-		if (isLeaf)
-		{
-			heuristicValue = tempBoard->evaluateBoard(currentPlayer);
-			if (!maximisingPlayer)
-			{
-				heuristicValue = -heuristicValue;
-			}
-			tree.back()->setContent(heuristicValue);
-		}
-
-		currentPlayer = tempBoard->checkPlayerTurn();
-		if (currentPlayer == maximisingPlayerIdentity)
-		{
-			maximisingPlayer = true;
-		}
-		else {
-			maximisingPlayer = false;
-		}
-	}
-
-	// Extract best move from the tree based on 
-	size_t bestMove = 3;
-	heuristicValue = root->getContent();
-	for (size_t i = 0; i < root->getChildrenSize(); ++i)
-	{
-		if (root->getChild(i)->getContent() == heuristicValue)
-		{
-			bestMove = i;
-			break;
-		}
-	}
-
-	delete root;
-	delete tempBoard;
-	return bestMove;
-}
-
-
 // Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
 int Connect4Board::evaluateBoard(const Connect4::Role player) const
 {
@@ -1137,3 +1021,48 @@ int Connect4Board::featureFour(const Connect4::Role player) const
 
 	return score;
 }
+
+// A pure monte carlo search
+// in each node use alpha to list wins and beta to list losses
+size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t msTime) const
+{
+	const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();;
+
+	size_t depth = 0;
+	const size_t moveCount = moveHistory.size();
+
+	// This is the index of the child to a node
+	size_t currentMove = 0;
+
+	// Indicates a leaf node
+	bool isLeaf = false;
+
+	// Root node
+	TreeNode<int>* root = new TreeNode<int>(nullptr);
+	TreeNode<int>* promisingNode;
+
+	// Vector to store tree traversal
+	std::vector<TreeNode<int>*> tree;
+	tree.push_back(root);
+
+	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
+	Connect4Board* tempBoard = new Connect4Board();
+	*tempBoard = *this;
+
+	// Perform MCTS until time has expired
+	while (std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() < msTime)
+	{
+		promisingNode = selectNode(root);
+	}
+
+	return 0;
+}
+
+
+TreeNode<int>* Connect4Board::selectNode(TreeNode<int>* rootNode)
+{
+	return nullptr;
+}
+
+
