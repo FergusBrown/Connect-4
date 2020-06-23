@@ -18,6 +18,8 @@ public:
 	void setDiscovered();
 	void setAlpha(const int value);
 	void setBeta(const int value);
+	void setVisitCount(const size_t value);
+	void setWinCount(const size_t value);
 
 	
 	// Getter
@@ -27,15 +29,17 @@ public:
 	size_t getChildrenSize() const;
 	int getAlpha() const;
 	int getBeta() const;
+	size_t getVisitCount() const;
+	size_t getWinCount() const;
 
 	// Utility
 	bool hasParent();
 	bool isEmpty();
 	bool isDiscovered();
-
 	void appendChild(T& content);
 	void appendABChild(T& content, int alpha, int beta);
 	void appendEmptyChild();
+	double calcUCT() const;
 
 private:
 	TreeNode* mParent;
@@ -48,6 +52,10 @@ private:
 	// Variables for alpha beta pruning
 	int mAlpha;
 	int mBeta;
+
+	// Variables for MC search: number of visits and playout wins
+	size_t mVisitCount;
+	size_t mWinCount;
 };
 #include "TreeNode.inl"
 

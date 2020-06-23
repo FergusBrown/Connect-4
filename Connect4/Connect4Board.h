@@ -75,7 +75,7 @@ private:
     int featureFour(const Connect4::Role player) const;
 
     // - MCTS functions
-    TreeNode<int>* selectNode(TreeNode<int>* rootNode);
+    TreeNode<int>* selectNode(TreeNode<int>* rootNode) const;
 
 };
 

@@ -1059,10 +1059,14 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 	return 0;
 }
 
-
-TreeNode<int>* Connect4Board::selectNode(TreeNode<int>* rootNode)
+// Search root children using Upper Confidence bounds applied to Trees (UVT) algorithm ->  https://link.springer.com/chapter/10.1007%2F11871842_29
+TreeNode<int>* Connect4Board::selectNode(TreeNode<int>* rootNode) const
 {
-	return nullptr;
+	TreeNode<int>* tempNode = rootNode;
+
+
+
+	return tempNode;
 }
 
 

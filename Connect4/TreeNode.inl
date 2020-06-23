@@ -1,4 +1,5 @@
 #include "TreeNode.h"
+#include <math.h>
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent) :
@@ -61,6 +62,18 @@ inline void TreeNode<T>::setBeta(const int value)
 }
 
 template<typename T>
+inline void TreeNode<T>::setVisitCount(const size_t value)
+{
+	mVisitCount = value;
+}
+
+template<typename T>
+inline void TreeNode<T>::setWinCount(const size_t value)
+{
+	mWinCount = value;
+}
+
+template<typename T>
 void TreeNode<T>::appendChild(T& content)
 {
 	TreeNode<T>* child = new TreeNode<T>(this, content);
@@ -80,6 +93,17 @@ inline void TreeNode<T>::appendEmptyChild()
 	TreeNode<T>* child = new TreeNode<T>(this);
 
 	mChildren.push_back(child);
+}
+
+template<typename T>
+double TreeNode<T>::calcUCT() const
+{
+	parentVisits = mParent->getVisitCount();
+	double c = 1.41421356237;
+
+	double result = mWinCount / mVisitCount + c * sqrt( log(parentVisits) / mVisitCount);
+
+	return result;
 }
 
 // need some sort of error protection here
@@ -117,6 +141,18 @@ template<typename T>
 inline int TreeNode<T>::getBeta() const
 {
 	return mBeta;
+}
+
+template<typename T>
+inline size_t TreeNode<T>::getVisitCount() const
+{
+	return mVisitCount;
+}
+
+template<typename T>
+inline size_t TreeNode<T>::getWinCount() const
+{
+	return mWinCount;
 }
 
 template<typename T>
