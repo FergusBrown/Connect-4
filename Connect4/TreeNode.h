@@ -33,13 +33,19 @@ public:
 	size_t getWinCount() const;
 
 	// Utility
+	// - General
 	bool hasParent();
 	bool isEmpty();
 	bool isDiscovered();
 	void appendChild(T& content);
-	void appendABChild(T& content, int alpha, int beta);
 	void appendEmptyChild();
+
+	// - AB pruning
+	void appendABChild(T& content, int alpha, int beta);
+
+	// - MCTS
 	double calcUCT() const;
+	TreeNode<T>* getBestNodeUCT() const;
 
 private:
 	TreeNode* mParent;

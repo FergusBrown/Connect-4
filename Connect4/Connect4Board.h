@@ -17,7 +17,8 @@ namespace Connect4
     using Board = std::vector<std::vector<Role>>;
 
     // win score for MCTS
-    const size_t WIN_SCORE = 10;
+    const size_t WIN_SCORE = 2;
+    const size_t DRAW_SCORE = 1;
 }
 
 class Connect4Board :
@@ -49,6 +50,7 @@ private:
     bool checkDiagL(std::optional<Connect4::Role>& winner) const;
     bool checkDiagR(std::optional<Connect4::Role>& winner) const;
     bool checkDraw() const;
+    bool inProgress() const;
 
     // Count number of connections
     size_t maxConnections(const Connect4::Role& player) const;
@@ -75,7 +77,9 @@ private:
     int featureFour(const Connect4::Role player) const;
 
     // - MCTS functions
-    TreeNode<int>* selectNode(TreeNode<int>* rootNode) const;
+    TreeNode<Connect4Board>* selectNode(TreeNode<Connect4Board>* rootNode) const;
+    void expandNode(TreeNode<Connect4Board>* node) const;
+    int simulatePlayout(TreeNode<Connect4Board>* node) const;
 
 };
 

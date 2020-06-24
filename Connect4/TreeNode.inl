@@ -3,20 +3,26 @@
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent) :
-	mParent(parent), mEmpty(true), mDiscovered(false), mBeta(INT_MAX), mAlpha(INT_MIN)
+	mParent(parent), mEmpty(true), mDiscovered(false)
+	, mBeta(INT_MAX), mAlpha(INT_MIN)
+	, mVisitCount(0), mWinCount(0)
 {
 }
 
 // Should this be inline?
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content) :
-	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false), mBeta(INT_MAX), mAlpha(INT_MIN)
+	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false)
+	, mBeta(INT_MAX), mAlpha(INT_MIN)
+	, mVisitCount(0), mWinCount(0)
 {
 }
 
 template<typename T>
 TreeNode<T>::TreeNode(TreeNode* parent, T& content, int alpha, int beta) :
-	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false), mBeta(beta), mAlpha(alpha)
+	mParent(parent), mContent(content), mEmpty(false), mDiscovered(false)
+	, mBeta(beta), mAlpha(alpha)
+	, mVisitCount(0), mWinCount(0)
 {
 }
 
@@ -98,12 +104,36 @@ inline void TreeNode<T>::appendEmptyChild()
 template<typename T>
 double TreeNode<T>::calcUCT() const
 {
+	if (mVisitCount == 0)
+	{
+		return DBL_MAX;
+	}
+
 	parentVisits = mParent->getVisitCount();
 	double c = 1.41421356237;
 
 	double result = mWinCount / mVisitCount + c * sqrt( log(parentVisits) / mVisitCount);
 
 	return result;
+}
+
+template<typename T>
+TreeNode<T>* TreeNode<T>::getBestNodeUCT() const
+{
+	TreeNode<T>* bestNode;
+	double maxUCT = 0;
+	double temp;
+
+	for (auto* child : mChildren)
+	{
+		temp = child->calcUCT();
+		if (temp > maxUCT)
+		{
+			maxUCT = temp;
+		}
+	}
+
+	return bestNode;
 }
 
 // need some sort of error protection here

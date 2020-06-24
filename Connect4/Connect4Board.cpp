@@ -381,6 +381,16 @@ bool Connect4Board::checkDraw() const
 	
 }
 
+bool Connect4Board::inProgress() const
+{
+	if (checkDraw || checkVictory().has_value())
+	{
+		return true;
+	}
+
+	return false;
+}
+
 size_t Connect4Board::maxConnections(const Connect4::Role& player) const
 {
 	return std::max<size_t>({ countHoriz(player), countVert(player), countDiagL(player), countDiagR(player) });
@@ -1038,35 +1048,70 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 	// Indicates a leaf node
 	bool isLeaf = false;
 
-	// Root node
-	TreeNode<int>* root = new TreeNode<int>(nullptr);
-	TreeNode<int>* promisingNode;
-
-	// Vector to store tree traversal
-	std::vector<TreeNode<int>*> tree;
-	tree.push_back(root);
-
 	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
 	Connect4Board* tempBoard = new Connect4Board();
 	*tempBoard = *this;
 
+	// Root node
+	TreeNode<Connect4Board>* root = new TreeNode<Connect4Board>(nullptr, *tempBoard);
+	TreeNode<Connect4Board>* currentNode;
+
+	// Vector to store tree traversal
+	std::vector<TreeNode<Connect4Board>*> tree;
+	tree.push_back(root);
+
+
+
 	// Perform MCTS until time has expired
 	while (std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() < msTime)
 	{
-		promisingNode = selectNode(root);
+		currentNode = selectNode(root);
+		if (inProgress())
+		{
+			expandNode(currentNode);
+		}
+
+		if (currentNode->getChildrenSize() > 0)
+		{
+			int index = rand() % currentNode->getChildrenSize();
+			currentNode = currentNode->getChild(index);
+		}
+		int playoutResult = simulatePlayout(currentNode);
 	}
 
+
+	delete tempBoard;
+	delete root;
 	return 0;
 }
 
-// Search root children using Upper Confidence bounds applied to Trees (UVT) algorithm ->  https://link.springer.com/chapter/10.1007%2F11871842_29
-TreeNode<int>* Connect4Board::selectNode(TreeNode<int>* rootNode) const
+// Search leaf nodes and recommend one using Upper Confidence bounds applied to Trees (UVT) algorithm ->  https://link.springer.com/chapter/10.1007%2F11871842_29
+TreeNode<Connect4Board>* Connect4Board::selectNode(TreeNode<Connect4Board>* rootNode) const
 {
-	TreeNode<int>* tempNode = rootNode;
-
-
+	TreeNode<Connect4Board>* tempNode = rootNode;
+	// perform UCT until a node is found with no children
+	while (rootNode->getChildrenSize() != 0)
+	{
+		tempNode = tempNode->getBestNodeUCT();
+	}
 
 	return tempNode;
+}
+
+// Fill the node's children
+void Connect4Board::expandNode(TreeNode<Connect4Board>* node) const
+{
+	// TODO : need to look over exactly how this works
+	for (int i = 0; i < mWidth; ++i)
+	{
+
+	}
+
+}
+
+int Connect4Board::simulatePlayout(TreeNode<Connect4Board>* node) const
+{
+	return 0;
 }
 
 
