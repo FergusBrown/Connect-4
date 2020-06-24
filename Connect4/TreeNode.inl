@@ -109,7 +109,7 @@ double TreeNode<T>::calcUCT() const
 		return DBL_MAX;
 	}
 
-	parentVisits = mParent->getVisitCount();
+	size_t parentVisits = mParent->getVisitCount();
 	double c = 1.41421356237;
 
 	double result = mWinCount / mVisitCount + c * sqrt( log(parentVisits) / mVisitCount);
@@ -120,7 +120,7 @@ double TreeNode<T>::calcUCT() const
 template<typename T>
 TreeNode<T>* TreeNode<T>::getBestNodeUCT() const
 {
-	TreeNode<T>* bestNode;
+	TreeNode<T>* bestNode = nullptr;
 	double maxUCT = 0;
 	double temp;
 
@@ -130,6 +130,7 @@ TreeNode<T>* TreeNode<T>::getBestNodeUCT() const
 		if (temp > maxUCT)
 		{
 			maxUCT = temp;
+			bestNode = child;
 		}
 	}
 

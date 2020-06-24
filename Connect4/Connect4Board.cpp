@@ -17,7 +17,7 @@ size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) cons
 		return alphaBetaSearch(maxDepth);
 		break;
 	case 2:
-		return monteCarloSearch(maxDepth);
+		return monteCarloSearch(maxDepth, 100);
 	default:
 		return depthFirstSearch(maxDepth);
 		break;
@@ -383,7 +383,7 @@ bool Connect4Board::checkDraw() const
 
 bool Connect4Board::inProgress() const
 {
-	if (checkDraw || checkVictory().has_value())
+	if (checkDraw() || checkVictory().has_value())
 	{
 		return true;
 	}
@@ -1045,22 +1045,15 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 	// This is the index of the child to a node
 	size_t currentMove = 0;
 
-	// Indicates a leaf node
-	bool isLeaf = false;
-
 	// Create a board which is manipulated as the tree is traversed. This is used to evaluate board state;
 	Connect4Board* tempBoard = new Connect4Board();
 	*tempBoard = *this;
 
+	Connect4::Role optimisingPlayer = checkPlayerTurn();
+
 	// Root node
 	TreeNode<Connect4Board>* root = new TreeNode<Connect4Board>(nullptr, *tempBoard);
 	TreeNode<Connect4Board>* currentNode;
-
-	// Vector to store tree traversal
-	std::vector<TreeNode<Connect4Board>*> tree;
-	tree.push_back(root);
-
-
 
 	// Perform MCTS until time has expired
 	while (std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() < msTime)
@@ -1076,13 +1069,15 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 			int index = rand() % currentNode->getChildrenSize();
 			currentNode = currentNode->getChild(index);
 		}
-		int playoutResult = simulatePlayout(currentNode);
+		int playoutResult = simulatePlayout(currentNode, optimisingPlayer);
+		backPropagate(currentNode, playoutResult);
 	}
 
+	size_t bestMove = getBestMCTSScore(root);
 
 	delete tempBoard;
 	delete root;
-	return 0;
+	return bestMove;
 }
 
 // Search leaf nodes and recommend one using Upper Confidence bounds applied to Trees (UVT) algorithm ->  https://link.springer.com/chapter/10.1007%2F11871842_29
@@ -1098,20 +1093,92 @@ TreeNode<Connect4Board>* Connect4Board::selectNode(TreeNode<Connect4Board>* root
 	return tempNode;
 }
 
-// Fill the node's children
-void Connect4Board::expandNode(TreeNode<Connect4Board>* node) const
+// Append all possible children to the leaf node
+// If make a particular move append an empty child
+void Connect4Board::expandNode(TreeNode<Connect4Board>* leafNode) const
 {
-	// TODO : need to look over exactly how this works
+	Connect4Board tempBoard = leafNode->getContent();
+	Connect4::Role player = tempBoard.checkPlayerTurn();
+
+	if (!tempBoard.inProgress())
+	{
+		return;
+	}
+
 	for (int i = 0; i < mWidth; ++i)
 	{
-
+		if (tempBoard.addPiece(i, player))
+		{
+			leafNode->appendChild(tempBoard);
+			tempBoard.rollBackMove(); 
+		}
+		else {
+			leafNode->appendEmptyChild();
+		}
 	}
 
 }
 
-int Connect4Board::simulatePlayout(TreeNode<Connect4Board>* node) const
+int Connect4Board::simulatePlayout(const TreeNode<Connect4Board>* node, const Connect4::Role& optimisingPlayer) const
 {
-	return 0;
+	Connect4Board tempBoard = node->getContent();
+
+	while (tempBoard.inProgress())
+	{
+		size_t index = rand() % mWidth;
+		Connect4::Role currentPlayer = tempBoard.checkPlayerTurn();
+		tempBoard.addPiece(index, currentPlayer);
+	}
+
+	int gameScore = 0;
+
+	if (tempBoard.checkDraw())
+	{
+		gameScore = Connect4::DRAW_SCORE;
+	}
+	else if (tempBoard.checkPlayerVictory(optimisingPlayer))
+	{
+		gameScore = Connect4::WIN_SCORE;
+	}
+
+
+	return gameScore;
+}
+
+void Connect4Board::backPropagate(TreeNode<Connect4Board>* node, int playoutResult) const
+{
+	TreeNode<Connect4Board>* tempNode = node;
+
+	while (tempNode != nullptr)
+	{
+		int visitCount = tempNode->getVisitCount() + 1;
+		int winScore = tempNode->getWinCount() + playoutResult;
+		tempNode->setVisitCount(visitCount);
+		tempNode->setWinCount(winScore);
+		tempNode = tempNode->getParent();
+	}
+}
+
+size_t Connect4Board::getBestMCTSScore(TreeNode<Connect4Board>* node) const
+{
+	double maxScore = 0;
+	size_t bestMove = 0;
+
+	for (size_t i = 0; i < node->getChildrenSize(); ++i)
+	{
+		TreeNode<Connect4Board>* child = node->getChild(i);
+		if (child->getVisitCount() != 0)
+		{
+			double temp = (double)child->getWinCount() / (double)child->getVisitCount();
+			if (temp > maxScore)
+			{
+				maxScore = temp;
+				bestMove = i;
+			}
+		}
+	}
+
+	return bestMove;
 }
 
 

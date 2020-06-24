@@ -79,7 +79,9 @@ private:
     // - MCTS functions
     TreeNode<Connect4Board>* selectNode(TreeNode<Connect4Board>* rootNode) const;
     void expandNode(TreeNode<Connect4Board>* node) const;
-    int simulatePlayout(TreeNode<Connect4Board>* node) const;
+    int simulatePlayout(const TreeNode<Connect4Board>* node, const Connect4::Role& optimisingPlayer) const;
+    void backPropagate(TreeNode<Connect4Board>* node, int playoutResult) const;
+    size_t getBestMCTSScore(TreeNode<Connect4Board>* node) const;   // Why can node pointer not be const
 
 };
 
