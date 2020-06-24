@@ -17,7 +17,8 @@ size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) cons
 		return alphaBetaSearch(maxDepth);
 		break;
 	case 2:
-		return monteCarloSearch(maxDepth, 100);
+		return monteCarloSearch(5000);
+		break;
 	default:
 		return depthFirstSearch(maxDepth);
 		break;
@@ -385,10 +386,10 @@ bool Connect4Board::inProgress() const
 {
 	if (checkDraw() || checkVictory().has_value())
 	{
-		return true;
+		return false;
 	}
 
-	return false;
+	return true;
 }
 
 size_t Connect4Board::maxConnections(const Connect4::Role& player) const
@@ -1034,10 +1035,14 @@ int Connect4Board::featureFour(const Connect4::Role player) const
 
 // A pure monte carlo search
 // in each node use alpha to list wins and beta to list losses
-size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t msTime) const
+size_t Connect4Board::monteCarloSearch(const long msTime) const
 {
-	const std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();;
+	using namespace std::chrono;
+	auto begin = system_clock::now();
+	auto now = system_clock::now();
+	long duration = duration_cast<milliseconds>(now - begin).count();
+	//milliseconds dur(epoch.count);
+
 
 	size_t depth = 0;
 	const size_t moveCount = moveHistory.size();
@@ -1056,13 +1061,10 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 	TreeNode<Connect4Board>* currentNode;
 
 	// Perform MCTS until time has expired
-	while (std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() < msTime)
+	while (duration < msTime)
 	{
 		currentNode = selectNode(root);
-		if (inProgress())
-		{
-			expandNode(currentNode);
-		}
+		expandNode(currentNode);
 
 		if (currentNode->getChildrenSize() > 0)
 		{
@@ -1071,6 +1073,9 @@ size_t Connect4Board::monteCarloSearch(const size_t numPlayouts, const size_t ms
 		}
 		int playoutResult = simulatePlayout(currentNode, optimisingPlayer);
 		backPropagate(currentNode, playoutResult);
+
+		now = system_clock::now();
+		duration = duration_cast<milliseconds>(now - begin).count();
 	}
 
 	size_t bestMove = getBestMCTSScore(root);

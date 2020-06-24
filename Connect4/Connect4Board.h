@@ -68,7 +68,7 @@ private:
     // Members for AI/tree search
     size_t depthFirstSearch(const size_t maxDepth) const;
     size_t alphaBetaSearch(const size_t maxDepth) const;
-    size_t monteCarloSearch(const size_t numPlayouts, const size_t maxTime) const;
+    size_t monteCarloSearch(const long maxTime) const;
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4::Role player) const;
