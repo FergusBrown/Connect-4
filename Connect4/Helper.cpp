@@ -1,4 +1,5 @@
 #include "Helper.h"
+#include <chrono>
 
 // display board via command line
 void help::displayConnect4(const Connect4Board &board)
@@ -114,9 +115,18 @@ void help::manualPlayLoop(Connect4Board& board)
 // Game loop for human players taking turns
 void help::agentLoopP2(Connect4Board& board)
 {
-	help::displayConnect4(board);
+	using namespace std::chrono;
+	auto begin = system_clock::now();
+	auto now = begin;
+
+	
 
 	size_t input;
+
+	int agentSelect = getAgentType();
+	int agentParameter = getAgentParameter(agentSelect);
+
+	help::displayConnect4(board);
 
 	while (!board.checkFinished())
 	{
@@ -134,10 +144,13 @@ void help::agentLoopP2(Connect4Board& board)
 		if (board.checkFinished())
 			break;
 
-		input = board.getBestMove(2, 100);
+		auto begin = system_clock::now();
+		input = board.getBestMove(agentSelect - 1, agentParameter);
+		auto now = system_clock::now();
 		board.addPiece(input, Connect4::PLAYER2);
 		help::displayConnect4(board);
-		std::cout << "AI played column " << input + 1 << std::endl;
+		long duration = duration_cast<milliseconds>(now - begin).count();
+		std::cout << "AI played column " << input + 1 << ".\nMove calculated in " << duration << " ms.\n" << std::endl;
 	}
 
 	help::declareWinner(board);
@@ -164,6 +177,71 @@ void help::declareWinner(const Connect4Board& board)
 	else {
 		std::cout << "Nobody has won!" << std::endl;
 	}
+}
+
+void help::agentTypePrompt()
+{
+	std::cout << "Please select a search type to be used:"
+		<< "\n1. Naive minimax."
+		<< "\n2. Minimax with alpha-beta pruning."
+		<< "\n3. Monte Carlo Tree Search" << std::endl;
+}
+
+int help::getMinimaxDepth()
+{
+	int input;
+	std::cout << "Please enter the depth for the search:" << std::endl;
+	std::cin >> input;
+	while (std::cin.fail() || input < 1) {
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cout << "Please enter a valid depth:" << std::endl;
+		std::cin >> input;
+	}
+
+	return input;
+}
+
+int help::getMCTSDuration()
+{
+	int input;
+	std::cout << "Please enter the duration for the search (in milliseconds):" << std::endl;
+	std::cin >> input;
+	while (std::cin.fail() || input < 1) {
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cout << "Please enter a valid duration:" << std::endl;
+		std::cin >> input;
+	}
+
+	return input;
+}
+
+int help::getAgentType()
+{
+	int input;
+	agentTypePrompt();
+	std::cin >> input;
+	while (std::cin.fail() || input < 1 || input > 3) {
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		agentTypePrompt();
+		std::cin >> input;
+	}
+
+	return input;
+}
+
+int help::getAgentParameter(int agentSelect)
+{
+
+	switch (agentSelect) {
+	case 3:
+		return getMCTSDuration();
+	default:
+		return getMinimaxDepth();
+	}
+
 }
 
 

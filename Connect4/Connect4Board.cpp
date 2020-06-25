@@ -17,7 +17,7 @@ size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) cons
 		return alphaBetaSearch(maxDepth);
 		break;
 	case 2:
-		return monteCarloSearch(100);
+		return monteCarloSearch(maxDepth);
 		break;
 	default:
 		return depthFirstSearch(maxDepth);
@@ -125,24 +125,7 @@ bool Connect4Board::rollBackMove()
 // check if game is finished
 bool Connect4Board::checkFinished() const
 {
-
-	if (checkVictory().has_value())
-	{
-		return true;
-	}
-
-	for (auto& inner : mCells)
-	{
-		for (auto& cell : inner)
-		{
-			if (!cell.has_value())
-			{
-				return false;
-			}
-		}
-	}
-
-	return true;
+	return !inProgress();
 }
 
 // check for vertical connect 4
@@ -1039,7 +1022,7 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 {
 	using namespace std::chrono;
 	auto begin = system_clock::now();
-	auto now = system_clock::now();
+	auto now = begin;
 	long duration = duration_cast<milliseconds>(now - begin).count();
 	//milliseconds dur(epoch.count);
 
