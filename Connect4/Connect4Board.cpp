@@ -4,9 +4,6 @@
 #include <chrono>
 #include "Connect4Board.h"
 
-// REMOVE ONCE DONE
-#include "Helper.h"
-
 size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) const
 {
 	switch (searchType) {
@@ -59,7 +56,6 @@ std::optional<Connect4::Role> Connect4Board::checkVictory() const
 {
 	std::optional<Connect4::Role> winner = std::nullopt;
 
-
 	checkHoriz(winner);
 	checkVert(winner);
 	checkDiagL(winner);
@@ -73,7 +69,7 @@ bool Connect4Board::checkPlayerVictory(const Connect4::Role& player) const
 {
 	std::optional<Connect4::Role> victor = checkVictory();
 
-	// I f an OR is used here will the first condition being true mean the next value is not checked?
+	// If an OR is used here will the first condition being true mean the next value is not checked?
 	if (!victor.has_value() || victor.value() != player)
 	{
 		return false;
@@ -81,8 +77,6 @@ bool Connect4Board::checkPlayerVictory(const Connect4::Role& player) const
 	else {
 		return true;
 	}
-
-	
 }
 
 std::stack<size_t> Connect4Board::getMoveHistory()
@@ -628,13 +622,10 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 		return false;
 	}
 
-
-
 	if (checkPlayerTurn() ==  player)
 	{
 		return true;
 	}
-
 
 	return false;
 }
@@ -722,7 +713,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 		depth = tempBoard->getMoveHistory().size() - moveCount;
 		isLeaf = (depth == maxDepth) || tempBoard->checkVictory().has_value() || tempBoard->checkDraw(); 
 
-
 		if (isLeaf)
 		{
 			heuristicValue = tempBoard->evaluateBoard(currentPlayer);
@@ -741,8 +731,6 @@ size_t Connect4Board::depthFirstSearch(const size_t maxDepth) const
 		else {
 			maximisingPlayer = false;
 		}
-
-		
 	}
 
 	// Extract best move from the tree based on 
@@ -852,7 +840,6 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 
 				if (tree.back()->getAlpha() >=  tree.back()->getBeta())
 				{
-					//std::cout << "skip" << std::endl;
 					int childNum = tree.back()->getChildrenSize();
 					for (int i = childNum; i <= mWidth; ++i)
 					{
@@ -860,7 +847,6 @@ size_t Connect4Board::alphaBetaSearch(const size_t maxDepth) const
 					}
 				}
 			}
-
 		}
 
 		// Change node board details for current node
@@ -1024,8 +1010,6 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 	auto begin = system_clock::now();
 	auto now = begin;
 	long duration = duration_cast<milliseconds>(now - begin).count();
-	//milliseconds dur(epoch.count);
-
 
 	size_t depth = 0;
 	const size_t moveCount = moveHistory.size();
@@ -1047,7 +1031,6 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 
 	// Perform MCTS until time has expired
 	while (duration < msTime)
-	//while(1)
 	{
 		currentNode = selectNode(root);
 		expandNode(currentNode);
