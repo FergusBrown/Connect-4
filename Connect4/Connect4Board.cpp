@@ -738,7 +738,14 @@ size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaF
 
 		if (isLeaf)
 		{
-			heuristicValue = tempBoard->evaluateBoard(currentPlayer);
+			if (tempBoard->checkPlayerVictory(currentPlayer))
+			{
+				heuristicValue = INT_MAX;
+			}
+			else {
+				heuristicValue = tempBoard->evaluateBoard(currentPlayer);
+			}
+				
 			if (!maximisingPlayer)
 			{
 				heuristicValue = -heuristicValue;
@@ -777,6 +784,7 @@ size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaF
 // Evaluate the board state based on heuristic 1 in this paper -> https://www.researchgate.net/publication/331552609_Research_on_Different_Heuristics_for_Minimax_Algorithm_Insight_from_Connect-4_Game
 int Connect4Board::evaluateBoard(const Connect4::Role player) const
 {
+
 	//size_t maxCount = board.maxConnections(player);
 	size_t horizCount = countHoriz(player);
 	size_t vertCount = countVert(player);
@@ -787,13 +795,13 @@ int Connect4Board::evaluateBoard(const Connect4::Role player) const
 	int heuristicValue;
 
 	switch (maxCount) {
-	case 6:
+	/*case 6:
 		heuristicValue = INT_MAX;
 		break;
 
 	case 5:
 		heuristicValue = INT_MAX;
-		break;
+		break;*/
 
 	case 4:
 		heuristicValue = INT_MAX;
