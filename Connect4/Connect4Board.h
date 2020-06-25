@@ -40,7 +40,7 @@ public:
     bool rollBackMove();
 
     // AI
-    size_t getBestMove(const int searchType, const int maxDepth) const;
+    size_t getBestMove(const int searchType, const int searchParam) const;
     
 
 private:
@@ -66,8 +66,7 @@ private:
     std::stack<size_t> moveHistory;
 
     // Members for AI/tree search
-    size_t depthFirstSearch(const size_t maxDepth) const;
-    size_t alphaBetaSearch(const size_t maxDepth) const;
+    size_t minimaxSearch(const size_t maxDepth, const bool alphaBetaFlag) const;
     size_t monteCarloSearch(const long maxTime) const;
 
     // - Heuristic evaluation
