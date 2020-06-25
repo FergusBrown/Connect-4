@@ -17,7 +17,7 @@ size_t Connect4Board::getBestMove(const int searchType, const int maxDepth) cons
 		return alphaBetaSearch(maxDepth);
 		break;
 	case 2:
-		return monteCarloSearch(5000);
+		return monteCarloSearch(100);
 		break;
 	default:
 		return depthFirstSearch(maxDepth);
@@ -1060,8 +1060,11 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 	TreeNode<Connect4Board>* root = new TreeNode<Connect4Board>(nullptr, *tempBoard);
 	TreeNode<Connect4Board>* currentNode;
 
+	int count = 0;
+
 	// Perform MCTS until time has expired
 	while (duration < msTime)
+	//while(1)
 	{
 		currentNode = selectNode(root);
 		expandNode(currentNode);
@@ -1076,6 +1079,7 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 
 		now = system_clock::now();
 		duration = duration_cast<milliseconds>(now - begin).count();
+		++count;
 	}
 
 	size_t bestMove = getBestMCTSScore(root);
@@ -1090,7 +1094,7 @@ TreeNode<Connect4Board>* Connect4Board::selectNode(TreeNode<Connect4Board>* root
 {
 	TreeNode<Connect4Board>* tempNode = rootNode;
 	// perform UCT until a node is found with no children
-	while (rootNode->getChildrenSize() != 0)
+	while (tempNode->getChildrenSize() != 0)
 	{
 		tempNode = tempNode->getBestNodeUCT();
 	}

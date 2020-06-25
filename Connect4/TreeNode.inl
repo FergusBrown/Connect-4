@@ -112,7 +112,7 @@ double TreeNode<T>::calcUCT() const
 	size_t parentVisits = mParent->getVisitCount();
 	double c = 1.41421356237;
 
-	double result = mWinCount / mVisitCount + c * sqrt( log(parentVisits) / mVisitCount);
+	double result = (double) mWinCount / (double) mVisitCount + c * sqrt( log(parentVisits) / (double) mVisitCount);
 
 	return result;
 }
