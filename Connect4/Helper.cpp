@@ -150,7 +150,7 @@ void help::agentLoopP2(Connect4Board& board)
 		board.addPiece(input, Connect4::PLAYER2);
 		help::displayConnect4(board);
 		long duration = duration_cast<milliseconds>(now - begin).count();
-		std::cout << "AI played column " << input + 1 << ".\nMove calculated in " << duration << " ms.\n" << std::endl;
+		std::cout << "AI played column " << input + 1 << ".\n" << board.getNodesVisited() << " game states were evaluated in " << duration << "ms.\n" << std::endl;
 	}
 
 	help::declareWinner(board);

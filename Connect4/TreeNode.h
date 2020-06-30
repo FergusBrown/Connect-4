@@ -15,6 +15,7 @@ public:
 	// Setters
 	void setParent(TreeNode* parent);
 	void setContent(const T& content);
+	void setEmpty(const bool empty);
 	void setDiscovered();
 	void setAlpha(const int value);
 	void setBeta(const int value);
@@ -39,6 +40,8 @@ public:
 	bool isDiscovered();
 	void appendChild(T& content);
 	void appendEmptyChild();
+	void removeChildren();
+	void removeChild(int pos);
 
 	// - AB pruning
 	void appendABChild(T& content, int alpha, int beta);

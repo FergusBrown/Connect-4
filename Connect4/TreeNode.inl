@@ -50,6 +50,12 @@ void TreeNode<T>::setContent(const T& content)
 }
 
 template<typename T>
+inline void TreeNode<T>::setEmpty(const bool empty)
+{
+	mEmpty = empty;
+}
+
+template<typename T>
 inline void TreeNode<T>::setDiscovered()
 {
 	mDiscovered = true;
@@ -99,6 +105,23 @@ inline void TreeNode<T>::appendEmptyChild()
 	TreeNode<T>* child = new TreeNode<T>(this);
 
 	mChildren.push_back(child);
+}
+
+template<typename T>
+inline void TreeNode<T>::removeChildren()
+{
+	for (auto* child : mChildren)
+	{
+		delete child;
+		child = nullptr;
+	}
+}
+
+template<typename T>
+inline void TreeNode<T>::removeChild(int pos)
+{
+	delete mChildren[pos];
+	mChildren[pos] = nullptr;
 }
 
 template<typename T>

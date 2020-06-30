@@ -6,7 +6,6 @@ int main()
 {
 	Connect4Board* board = new Connect4Board();
 
-	//help::manualPlayLoop(*board);
 	help::agentLoopP2(*board);
 
 	delete board;

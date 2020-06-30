@@ -4,8 +4,10 @@
 #include <chrono>
 #include "Connect4Board.h"
 
-size_t Connect4Board::getBestMove(const int searchType, const int searchParam) const
+size_t Connect4Board::getBestMove(const int searchType, const int searchParam)
 {
+	nodesVisited = 0;
+
 	switch (searchType) {
 	case 0: 
 		return minimaxSearch(searchParam, false);
@@ -23,8 +25,13 @@ size_t Connect4Board::getBestMove(const int searchType, const int searchParam) c
 
 }
 
+size_t Connect4Board::getNodesVisited() const
+{
+	return nodesVisited;
+}
+
 Connect4Board::Connect4Board()
-	: Grid<Connect4::Role>(7, 6)
+	: Grid<Connect4::Role>(7, 6), nodesVisited(0)
 {
 }
 
@@ -633,7 +640,7 @@ bool Connect4Board::checkTurnValid(const Connect4::Role& player) const
 // Create and traverse tree with depth first search -> https://en.wikipedia.org/wiki/Depth-first_search
 // use minimax algorithm to evaluate each node and determine the best move -> https://en.wikipedia.org/wiki/Minimax
 // If AB flag true then the search is improved with alpha-beta proving
-size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaFlag) const
+size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaFlag)
 {
 	// Find current player to maximise 
 	const Connect4::Role maximisingPlayerIdentity = checkPlayerTurn();
@@ -690,6 +697,8 @@ size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaF
 					tree.back()->appendABChild(heuristicValue, alpha, beta);
 				}
 				tree.push_back(tree.back()->getChild(currentMove));
+
+				++nodesVisited;
 			}
 			else {
 				tree.back()->appendEmptyChild();
@@ -718,6 +727,10 @@ size_t Connect4Board::minimaxSearch(const size_t maxDepth, const bool alphaBetaF
 
 				tempBoard->rollBackMove();
 				tree.pop_back();
+				if (tree.back()->hasParent())
+				{
+					tree.back()->removeChild(tree.back()->getChildrenSize() - 1);
+				}
 
 				if (tree.back()->getAlpha() >=  tree.back()->getBeta() && alphaBetaFlag)
 				{
@@ -795,14 +808,6 @@ int Connect4Board::evaluateBoard(const Connect4::Role player) const
 	int heuristicValue;
 
 	switch (maxCount) {
-	/*case 6:
-		heuristicValue = INT_MAX;
-		break;
-
-	case 5:
-		heuristicValue = INT_MAX;
-		break;*/
-
 	case 4:
 		heuristicValue = INT_MAX;
 		break;
@@ -891,7 +896,7 @@ int Connect4Board::featureFour(const Connect4::Role player) const
 
 // A pure monte carlo search
 // in each node use alpha to list wins and beta to list losses
-size_t Connect4Board::monteCarloSearch(const long msTime) const
+size_t Connect4Board::monteCarloSearch(const long msTime) //const
 {
 	using namespace std::chrono;
 	auto begin = system_clock::now();
@@ -936,6 +941,7 @@ size_t Connect4Board::monteCarloSearch(const long msTime) const
 	}
 
 	size_t bestMove = getBestMCTSScore(root);
+	nodesVisited = root->getVisitCount();
 
 	delete tempBoard;
 	delete root;

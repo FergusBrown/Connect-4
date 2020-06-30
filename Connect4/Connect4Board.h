@@ -40,7 +40,8 @@ public:
     bool rollBackMove();
 
     // AI
-    size_t getBestMove(const int searchType, const int searchParam) const;
+    size_t getBestMove(const int searchType, const int searchParam);
+    size_t getNodesVisited() const;
     
 
 private:
@@ -66,8 +67,8 @@ private:
     std::stack<size_t> moveHistory;
 
     // Members for AI/tree search
-    size_t minimaxSearch(const size_t maxDepth, const bool alphaBetaFlag) const;
-    size_t monteCarloSearch(const long maxTime) const;
+    size_t minimaxSearch(const size_t maxDepth, const bool alphaBetaFlag);
+    size_t monteCarloSearch(const long maxTime);
 
     // - Heuristic evaluation
     int evaluateBoard(const Connect4::Role player) const;
@@ -81,6 +82,8 @@ private:
     int simulatePlayout(const TreeNode<Connect4Board>* node, const Connect4::Role& optimisingPlayer) const;
     void backPropagate(TreeNode<Connect4Board>* node, int playoutResult) const;
     size_t getBestMCTSScore(TreeNode<Connect4Board>* node) const;   // Why can node pointer not be const
+
+    size_t nodesVisited;
 
 };
 
